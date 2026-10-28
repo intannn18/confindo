@@ -515,9 +515,8 @@ class ConfApi {
         const serverOrders = await res.json();
         if (Array.isArray(serverOrders) && serverOrders.length > 0) {
           console.log('[CONFindo] Orders loaded from Hosting Server (api.php) 🚀', serverOrders.length);
-          const serverIds = new Set(serverOrders.map(o => o.id));
-          const localOnly = this.db.orders.filter(o => !serverIds.has(o.id));
-          this.db.orders = [...serverOrders, ...localOnly];
+          // Set server orders as the true central database across all devices
+          this.db.orders = serverOrders;
           this.save();
           return this.getAllOrders();
         }

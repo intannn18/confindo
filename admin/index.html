@@ -223,7 +223,7 @@
   <!-- Scripts -->
   <script src="../js/data.js"></script>
   <script src="../js/supabase-config.js"></script>
-  <script src="../js/api.js"></script>
+  <script src="../js/api.js?v=20261028_v3"></script>
   <script src="../js/navbar.js"></script>
   <script>
     function checkAdminAuth() {
@@ -286,7 +286,8 @@
       renderOrdersTable();
 
       if (badge) {
-        badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Database Server Aktif';
+        const orderCount = window.confApi ? window.confApi.getAllOrders().length : 0;
+        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Database Hosting Aktif (${orderCount} Pesanan)`;
       }
     }
 

@@ -78,8 +78,34 @@ if ($action === 'test') {
     exit;
 }
 
-// 2. SIMPAN TRANSAKSI BARU (POST)
-if ($action === 'create_order' || ($requestMethod === 'POST' && $action !== 'login')) {
+// 2. OVERWRITE / SINKRONKAN SEMUA ORDER (POST sync_all)
+if ($action === 'sync_all' && $requestMethod === 'POST') {
+    $rawInput = file_get_contents('php://input');
+    $allOrders = json_decode($rawInput, true);
+    if (is_array($allOrders)) {
+        @file_put_contents($ordersFile, json_encode($allOrders, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        echo json_encode(['success' => true, 'count' => count($allOrders), 'orders' => $allOrders]);
+        exit;
+    }
+}
+
+// 3. HAPUS SATU TRANSAKSI (delete_order)
+if ($action === 'delete_order' && isset($_GET['id'])) {
+    $delId = $_GET['id'];
+    $content = @file_get_contents($ordersFile);
+    $orders = json_decode($content, true);
+    if (is_array($orders)) {
+        $orders = array_values(array_filter($orders, function($o) use ($delId) {
+            return isset($o['id']) && $o['id'] !== $delId;
+        }));
+        @file_put_contents($ordersFile, json_encode($orders, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        echo json_encode(['success' => true, 'deleted' => $delId, 'count' => count($orders)]);
+        exit;
+    }
+}
+
+// 4. SIMPAN TRANSAKSI BARU (POST create_order)
+if ($action === 'create_order' || ($requestMethod === 'POST' && $action !== 'login' && $action !== 'sync_all')) {
     $rawInput = file_get_contents('php://input');
     $newOrder = json_decode($rawInput, true);
 
