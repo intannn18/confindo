@@ -600,6 +600,7 @@ Mohon diverifikasi pembayarannya ya min. Terima kasih banyak! 🙏✨`;
 
       if (window.confApi) {
         window.confApi.createOrder(user.id, currentProd.id, 'QRIS', {
+          orderId: orderId,
           name: buyerName,
           email: buyerEmail,
           phone: buyerPhone,

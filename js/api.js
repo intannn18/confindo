@@ -462,13 +462,94 @@ class ConfApi {
   }
 
   // ==========================================
+  // ==========================================
+  // Supabase Cloud Integration Helper
+  // ==========================================
+  getSupabaseConfig() {
+    if (typeof SUPABASE_CONFIG !== 'undefined' && SUPABASE_CONFIG && typeof SUPABASE_CONFIG.isConfigured === 'function' && SUPABASE_CONFIG.isConfigured()) {
+      return SUPABASE_CONFIG;
+    }
+    return {
+      url: 'https://ybswbcurrxehcafvcrdx.supabase.co',
+      anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlic3diY3VycnhlaGNhZnZjcmR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxNjU1NjQsImV4cCI6MjEwODc0MTU2NH0.JApEVIa0Gx1owGp-g8XVCSD6GdzVpHcaMlPav0mMo-Q',
+      isConfigured: function() { return true; }
+    };
+  }
+
+  async saveOrderToSupabase(orderData) {
+    const config = this.getSupabaseConfig();
+    if (!config || !config.isConfigured()) return false;
+    try {
+      const res = await fetch(`${config.url}/rest/v1/orders`, {
+        method: 'POST',
+        headers: {
+          'apikey': config.anonKey,
+          'Authorization': `Bearer ${config.anonKey}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          id: orderData.id,
+          user_id: orderData.user_id || 'usr-guest',
+          buyer_name: orderData.buyer_name || '',
+          buyer_email: orderData.buyer_email || '',
+          buyer_phone: orderData.buyer_phone || '',
+          buyer_notes: orderData.buyer_notes || '',
+          product_name: orderData.product_name || 'Digital Product',
+          total: Number(orderData.total) || 0,
+          payment_status: orderData.payment_status || 'paid',
+          payment_reference: orderData.payment_reference || '',
+          payment_method: orderData.payment_method || 'QRIS',
+          created_at: orderData.created_at || new Date().toISOString()
+        })
+      });
+      if (res.ok) {
+        console.log('[CONFindo] Order successfully saved to Supabase Cloud ☁️', orderData.id);
+        return true;
+      } else {
+        const err = await res.text();
+        console.warn('[CONFindo] Supabase order save rejected:', err);
+      }
+    } catch (e) {
+      console.warn('[CONFindo] Supabase order network error:', e);
+    }
+    return false;
+  }
+
+  async fetchOrdersFromSupabase() {
+    const config = this.getSupabaseConfig();
+    if (!config || !config.isConfigured()) return null;
+    try {
+      const res = await fetch(`${config.url}/rest/v1/orders?select=*&order=created_at.desc`, {
+        method: 'GET',
+        headers: {
+          'apikey': config.anonKey,
+          'Authorization': `Bearer ${config.anonKey}`
+        }
+      });
+      if (res.ok) {
+        const cloudOrders = await res.json();
+        if (Array.isArray(cloudOrders)) {
+          const cloudIds = new Set(cloudOrders.map(o => o.id));
+          const localOnly = this.db.orders.filter(o => !cloudIds.has(o.id));
+          this.db.orders = [...cloudOrders, ...localOnly];
+          this.save();
+          return this.getAllOrders();
+        }
+      }
+    } catch (e) {
+      console.warn('[CONFindo] Fetching orders from Supabase failed:', e);
+    }
+    return null;
+  }
+
   // Orders & Digital Product Access (Security)
   // ==========================================
   createOrder(userId, productId, paymentMethod = 'QRIS', buyerInfo = null) {
     const product = this.getProductById(productId);
     if (!product) return { success: false, message: 'Produk tidak ditemukan.' };
 
-    const orderId = 'ORD-QRIS-' + Math.floor(1000 + Math.random() * 9000);
+    const orderId = buyerInfo?.orderId || ('ORD-QRIS-' + Math.floor(1000 + Math.random() * 9000));
     const newOrder = {
       id: orderId,
       user_id: userId,
@@ -476,6 +557,7 @@ class ConfApi {
       buyer_email: buyerInfo?.email || '',
       buyer_phone: buyerInfo?.phone || '',
       buyer_notes: buyerInfo?.notes || '',
+      product_name: product.name,
       total: product.price,
       payment_status: 'paid', // Instant verified in prototype
       payment_reference: 'QRIS-ID1026614998627-' + Math.floor(100000 + Math.random() * 900000),
@@ -493,6 +575,9 @@ class ConfApi {
     this.db.orders.unshift(newOrder);
     this.db.order_items.unshift(newOrderItem);
     this.save();
+
+    // Asynchronously save to Supabase Cloud
+    this.saveOrderToSupabase(newOrder);
 
     return { success: true, order: newOrder, product };
   }
@@ -526,13 +611,13 @@ class ConfApi {
   getAllOrders() {
     return this.db.orders.map(o => {
       const user = this.db.users.find(u => u.id === o.user_id);
-      const item = this.db.order_items.find(oi => oi.order_id === o.id);
+      const item = this.db.order_items ? this.db.order_items.find(oi => oi.order_id === o.id) : null;
       const product = item ? this.db.products.find(p => p.id === item.product_id) : null;
       return {
         ...o,
-        userName: user ? user.name : 'Unknown User',
-        userEmail: user ? user.email : '',
-        productName: product ? product.name : 'Digital Product'
+        userName: o.buyer_name || (user ? user.name : 'Customer'),
+        userEmail: o.buyer_email || (user ? user.email : ''),
+        productName: o.product_name || (product ? product.name : 'Digital Product')
       };
     });
   }
