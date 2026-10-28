@@ -9,7 +9,8 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+$requestMethod = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
+if ($requestMethod === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
@@ -78,7 +79,7 @@ if ($action === 'test') {
 }
 
 // 2. SIMPAN TRANSAKSI BARU (POST)
-if ($action === 'create_order' || ($_SERVER['REQUEST_METHOD'] === 'POST' && $action !== 'login')) {
+if ($action === 'create_order' || ($requestMethod === 'POST' && $action !== 'login')) {
     $rawInput = file_get_contents('php://input');
     $newOrder = json_decode($rawInput, true);
 
