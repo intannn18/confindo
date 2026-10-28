@@ -172,7 +172,52 @@ if ($action === 'create_user' && $requestMethod === 'POST') {
     }
 }
 
-// 5. OVERWRITE / SINKRONKAN SEMUA ORDER (POST sync_all)
+// 5. HAPUS SATU TRANSAKSI (delete_order)
+if ($action === 'delete_order') {
+    $rawInput = file_get_contents('php://input');
+    $inputData = json_decode($rawInput, true);
+    $delId = isset($_GET['id']) ? $_GET['id'] : (isset($inputData['id']) ? $inputData['id'] : '');
+
+    if (!empty($delId)) {
+        $content = @file_get_contents($ordersFile);
+        $orders = json_decode($content, true);
+        if (!is_array($orders)) $orders = [];
+        $orders = array_values(array_filter($orders, function($o) use ($delId) {
+            return isset($o['id']) && $o['id'] !== $delId;
+        }));
+        @file_put_contents($ordersFile, json_encode($orders, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        echo json_encode(['success' => true, 'deleted' => $delId, 'orders' => $orders]);
+        exit;
+    }
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => 'ID pesanan tidak ditemukan.']);
+    exit;
+}
+
+// 6. HAPUS SATU PENGGUNA (delete_user)
+if ($action === 'delete_user') {
+    $rawInput = file_get_contents('php://input');
+    $inputData = json_decode($rawInput, true);
+    $delId = isset($_GET['id']) ? $_GET['id'] : (isset($inputData['id']) ? $inputData['id'] : '');
+
+    if (!empty($delId)) {
+        $content = @file_get_contents($usersFile);
+        $users = json_decode($content, true);
+        if (!is_array($users)) $users = [];
+        $users = array_values(array_filter($users, function($u) use ($delId) {
+            if (isset($u['role']) && $u['role'] === 'admin') return true;
+            return isset($u['id']) && $u['id'] !== $delId;
+        }));
+        @file_put_contents($usersFile, json_encode($users, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        echo json_encode(['success' => true, 'deleted' => $delId, 'users' => $users]);
+        exit;
+    }
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => 'ID pengguna tidak ditemukan.']);
+    exit;
+}
+
+// 7. OVERWRITE / SINKRONKAN SEMUA ORDER (POST sync_all)
 if ($action === 'sync_all' && $requestMethod === 'POST') {
     $rawInput = file_get_contents('php://input');
     $allOrders = json_decode($rawInput, true);
@@ -183,8 +228,8 @@ if ($action === 'sync_all' && $requestMethod === 'POST') {
     }
 }
 
-// 6. SIMPAN TRANSAKSI BARU (POST create_order)
-if ($action === 'create_order' || ($requestMethod === 'POST' && $action !== 'login' && $action !== 'sync_all' && $action !== 'create_user')) {
+// 8. SIMPAN TRANSAKSI BARU (POST create_order)
+if ($action === 'create_order' || ($requestMethod === 'POST' && $action !== 'login' && $action !== 'sync_all' && $action !== 'create_user' && $action !== 'delete_order' && $action !== 'delete_user')) {
     $rawInput = file_get_contents('php://input');
     $newOrder = json_decode($rawInput, true);
 

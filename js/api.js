@@ -730,6 +730,57 @@ class ConfApi {
     return { success: false, message: 'Order tidak ditemukan' };
   }
 
+  async deleteOrder(orderId) {
+    if (!orderId) return { success: false, message: 'ID pesanan kosong.' };
+
+    // 1. Hapus dari database lokal
+    this.db.orders = this.db.orders.filter(o => o.id !== orderId);
+    if (this.db.order_items) {
+      this.db.order_items = this.db.order_items.filter(oi => oi.order_id !== orderId);
+    }
+    this.save();
+
+    // 2. Hapus dari Server Hosting (api.php)
+    const apiUrl = this.getApiPhpUrl();
+    try {
+      await fetch(`${apiUrl}?action=delete_order&id=${encodeURIComponent(orderId)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: orderId })
+      });
+      console.log('[CONFindo] Order berhasil dihapus permanen dari server 🗑️', orderId);
+    } catch (e) {
+      console.warn('[CONFindo] Error menghapus pesanan di server:', e);
+    }
+    return { success: true };
+  }
+
+  async deleteUser(userId) {
+    if (!userId) return { success: false, message: 'ID pengguna kosong.' };
+    const u = this.db.users.find(usr => usr.id === userId);
+    if (u && (u.role === 'admin' || (u.email && u.email.toLowerCase() === 'admin@confindo.id'))) {
+      return { success: false, message: 'Akun Administrator utama dilindungi dan tidak dapat dihapus.' };
+    }
+
+    // 1. Hapus dari database lokal
+    this.db.users = this.db.users.filter(usr => usr.id !== userId);
+    this.save();
+
+    // 2. Hapus dari Server Hosting (api.php)
+    const apiUrl = this.getApiPhpUrl();
+    try {
+      await fetch(`${apiUrl}?action=delete_user&id=${encodeURIComponent(userId)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: userId })
+      });
+      console.log('[CONFindo] User berhasil dihapus permanen dari server 🗑️', userId);
+    } catch (e) {
+      console.warn('[CONFindo] Error menghapus pengguna di server:', e);
+    }
+    return { success: true };
+  }
+
   // ==========================================
   // Admin Statistics & User Management
   // ==========================================

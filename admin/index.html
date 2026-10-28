@@ -223,7 +223,7 @@
   <!-- Scripts -->
   <script src="../js/data.js"></script>
   <script src="../js/supabase-config.js"></script>
-  <script src="../js/api.js?v=20261028_v3"></script>
+  <script src="../js/api.js?v=20261028_v4"></script>
   <script src="../js/navbar.js"></script>
   <script>
     function checkAdminAuth() {
@@ -360,7 +360,7 @@
       const orders = window.confApi.getAllOrders();
       const el = document.getElementById('adminOrdersTable');
       if (!orders || orders.length === 0) {
-        el.innerHTML = '<div class="py-12 text-center text-slate-400 text-xs">Belum ada transaksi di database cloud Supabase.</div>';
+        el.innerHTML = '<div class="py-12 text-center text-slate-400 text-xs">Belum ada transaksi di database server hosting.</div>';
         return;
       }
       el.innerHTML = `
@@ -374,6 +374,7 @@
               <th class="pb-3">Total</th>
               <th class="pb-3">Status</th>
               <th class="pb-3">Tanggal</th>
+              <th class="pb-3 text-right">Aksi</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100">
@@ -393,6 +394,11 @@
                   </span>
                 </td>
                 <td class="py-3 text-slate-400">${new Date(o.created_at).toLocaleDateString('id-ID')}</td>
+                <td class="py-3 text-right">
+                  <button type="button" onclick="confirmDeleteOrder('${o.id}')" class="px-2.5 py-1 text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 hover:text-rose-700 border border-rose-200 rounded-lg transition-all inline-flex items-center gap-1 shadow-sm">
+                    🗑️ Hapus
+                  </button>
+                </td>
               </tr>
             `).join('')}
           </tbody>
@@ -413,6 +419,7 @@
               <th class="pb-3">Role</th>
               <th class="pb-3">Purchased Products</th>
               <th class="pb-3">Tanggal Registrasi</th>
+              <th class="pb-3 text-right">Aksi</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100">
@@ -423,11 +430,47 @@
                 <td class="py-3 font-bold ${u.role === 'admin' ? 'text-amber-700' : 'text-blue-700'}">${u.role.toUpperCase()}</td>
                 <td class="py-3 font-bold text-emerald-600">${u.purchasesCount} item</td>
                 <td class="py-3 text-slate-400">${new Date(u.created_at).toLocaleDateString('id-ID')}</td>
+                <td class="py-3 text-right">
+                  ${u.role !== 'admin' ? `
+                    <button type="button" onclick="confirmDeleteUser('${u.id}', '${u.name}')" class="px-2.5 py-1 text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 hover:text-rose-700 border border-rose-200 rounded-lg transition-all inline-flex items-center gap-1 shadow-sm">
+                      🗑️ Hapus
+                    </button>
+                  ` : '<span class="text-[10px] text-slate-400 font-semibold px-2 py-0.5 bg-slate-100 rounded">Super Admin</span>'}
+                </td>
               </tr>
             `).join('')}
           </tbody>
         </table>
       `;
+    }
+
+    async function confirmDeleteOrder(orderId) {
+      if (!confirm(`Hapus transaksi ${orderId}?\nData di server hosting akan terhapus permanen.`)) {
+        return;
+      }
+      const badge = document.getElementById('supabaseSyncBadge');
+      if (badge) badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-rose-500 animate-spin"></span> Menghapus dari server...';
+
+      if (window.confApi && window.confApi.deleteOrder) {
+        await window.confApi.deleteOrder(orderId);
+      }
+      await refreshAdminOrders();
+    }
+
+    async function confirmDeleteUser(userId, userName) {
+      if (!confirm(`Hapus pengguna "${userName}"?\nData di server hosting akan terhapus permanen.`)) {
+        return;
+      }
+      const badge = document.getElementById('supabaseSyncBadge');
+      if (badge) badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-rose-500 animate-spin"></span> Menghapus dari server...';
+
+      if (window.confApi && window.confApi.deleteUser) {
+        const res = await window.confApi.deleteUser(userId);
+        if (!res.success) {
+          alert(res.message);
+        }
+      }
+      await refreshAdminOrders();
     }
 
     // Modal Operations
