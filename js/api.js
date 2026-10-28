@@ -3,6 +3,13 @@
  * Manages Relational Data, Local Storage Sync, and REST/Supabase Adapter
  */
 
+// Force HTTPS on live hosting to ensure seamless cookies and avoid 301 drop
+if (typeof window !== 'undefined' && window.location) {
+  if (window.location.protocol === 'http:' && window.location.hostname.includes('confindo.my.id')) {
+    window.location.replace('https://' + window.location.host + window.location.pathname + window.location.search + window.location.hash);
+  }
+}
+
 class ConfApi {
   constructor() {
     this.storageKey = 'confindo_db_v8';
@@ -163,11 +170,42 @@ class ConfApi {
 
   async login(email, password) {
     const cleanEmail = (email || '').trim().toLowerCase();
+    const cleanPass = (password || '').trim();
 
-    // 1. Check local db first
+    // 1. Direct Server-Side Authentication (Centralized Database on Hosting)
+    const apiUrl = this.getApiPhpUrl();
+    try {
+      const q = new URLSearchParams({
+        action: 'login',
+        email: cleanEmail,
+        password: cleanPass,
+        t: Date.now()
+      }).toString();
+
+      const res = await fetch(`${apiUrl}?${q}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: cleanEmail, password: cleanPass })
+      });
+      if (res.ok) {
+        const result = await res.json();
+        if (result.success && result.user) {
+          this.setCurrentUser(result.user);
+          try { await this.fetchOrdersFromServer(); } catch(err){}
+          return { success: true, user: result.user };
+        } else if (result.message) {
+          if (result.message === 'Kata sandi salah.') {
+            return { success: false, message: result.message };
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('[CONFindo] Server direct login notice:', e);
+    }
+
+    // 2. Local Fallback if offline
     let user = this.db.users.find(u => u.email && u.email.toLowerCase().trim() === cleanEmail);
 
-    // 2. If not found locally, fetch latest users directly from server hosting!
     if (!user) {
       try {
         await this.fetchOrdersFromServer();
@@ -182,9 +220,9 @@ class ConfApi {
     // Allow convenient admin passwords (case variations & shortcuts)
     const isAdmin = user.role === 'admin' || user.email.toLowerCase() === 'admin@confindo.id';
     const allowedAdminPass = ['Admin#CONFindo2026!', 'admin123', 'admin', 'Admin123', 'admin#confindo2026!'];
-    if (isAdmin && allowedAdminPass.includes(password)) {
+    if (isAdmin && allowedAdminPass.includes(cleanPass)) {
       // Valid admin password
-    } else if (user.password_hash !== password && user.password_hash !== 'sha256_' + password) {
+    } else if (user.password_hash !== cleanPass && user.password_hash !== 'sha256_' + cleanPass) {
       return { success: false, message: 'Kata sandi salah.' };
     }
 
@@ -205,7 +243,13 @@ class ConfApi {
     if (cleanEmail === 'admin@confindo.id' || cleanEmail.includes('admin@')) {
       return { success: false, message: 'Alamat email ini dikhususkan untuk Administrator internal.' };
     }
-    const existing = this.db.users.find(u => u.email.toLowerCase() === cleanEmail);
+
+    // Refresh users from server first to prevent duplicate email registration
+    try {
+      await this.fetchOrdersFromServer();
+    } catch (e) {}
+
+    const existing = this.db.users.find(u => u.email && u.email.toLowerCase().trim() === cleanEmail);
     if (existing) {
       return { success: false, message: 'Email sudah digunakan oleh akun lain.' };
     }
@@ -213,18 +257,23 @@ class ConfApi {
     const newUser = {
       id: 'usr-' + Date.now(),
       name: name.trim(),
-      email: email.trim().toLowerCase(),
+      email: cleanEmail,
       password_hash: password,
       role: 'user',
       profile_image: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0b5796&color=fff`,
       created_at: new Date().toISOString()
     };
 
-    this.db.users.push(newUser);
-    this.save();
+    // 1. Simpan ke database server hosting terlebih dahulu
     try {
       await this.saveUserToServer(newUser);
-    } catch (e) {}
+    } catch (e) {
+      console.warn('saveUserToServer warning:', e);
+    }
+
+    // 2. Simpan ke database lokal
+    this.db.users.push(newUser);
+    this.save();
 
     const sessionUser = {
       id: newUser.id,
@@ -492,6 +541,9 @@ class ConfApi {
   getApiPhpUrl() {
     if (typeof window === 'undefined') return 'api.php';
     const loc = window.location;
+    if (loc.hostname && loc.hostname.includes('confindo.my.id')) {
+      return 'https://confindo.my.id/api.php';
+    }
     if (loc.protocol && loc.protocol.startsWith('http')) {
       const path = loc.pathname;
       const cleanPath = path.replace(/\/(admin|login|catalog|checkout|challenge|latihan|tutorial|auth)(\/.*)?$/i, '');
@@ -525,15 +577,42 @@ class ConfApi {
 
   async saveUserToServer(userData) {
     const apiUrl = this.getApiPhpUrl();
+    const queryParams = new URLSearchParams({
+      action: 'create_user',
+      id: userData.id || ('usr-' + Date.now()),
+      name: userData.name || '',
+      email: userData.email || '',
+      password: userData.password_hash || 'user123',
+      role: userData.role || 'user',
+      t: Date.now()
+    }).toString();
+
+    // 1. Try POST
     try {
-      await fetch(`${apiUrl}?action=create_user`, {
+      const res = await fetch(`${apiUrl}?${queryParams}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData)
       });
+      if (res.ok) {
+        console.log('[CONFindo] User saved to server (POST) 🚀:', userData.email);
+        return true;
+      }
     } catch (e) {
-      console.warn('[CONFindo] Native PHP API user save notice:', e);
+      console.warn('[CONFindo] Native PHP API user save (POST) notice:', e);
     }
+
+    // 2. Fallback GET query params
+    try {
+      const resGet = await fetch(`${apiUrl}?${queryParams}`);
+      if (resGet.ok) {
+        console.log('[CONFindo] User saved to server (GET fallback) 🚀:', userData.email);
+        return true;
+      }
+    } catch (err) {
+      console.warn('[CONFindo] Native PHP API user save (GET) notice:', err);
+    }
+    return false;
   }
 
   async fetchOrdersFromServer() {
@@ -545,11 +624,29 @@ class ConfApi {
         const data = await res.json();
         if (data && (Array.isArray(data.orders) || Array.isArray(data.users))) {
           console.log('[CONFindo] Unified Data loaded from Hosting Server (api.php) 🚀', data);
-          if (Array.isArray(data.orders) && data.orders.length > 0) {
-            this.db.orders = data.orders;
+          if (Array.isArray(data.orders)) {
+            const mergedOrders = [...data.orders];
+            if (Array.isArray(this.db.orders)) {
+              for (const lo of this.db.orders) {
+                if (lo && lo.id && !mergedOrders.some(mo => mo.id === lo.id)) {
+                  mergedOrders.push(lo);
+                  try { this.saveOrderToServer(lo); } catch(e){}
+                }
+              }
+            }
+            this.db.orders = mergedOrders;
           }
           if (Array.isArray(data.users) && data.users.length > 0) {
-            this.db.users = data.users;
+            const mergedUsers = [...data.users];
+            if (Array.isArray(this.db.users)) {
+              for (const lu of this.db.users) {
+                if (lu && lu.email && !mergedUsers.some(mu => mu.email && mu.email.toLowerCase().trim() === lu.email.toLowerCase().trim())) {
+                  mergedUsers.push(lu);
+                  try { this.saveUserToServer(lu); } catch(e){}
+                }
+              }
+            }
+            this.db.users = mergedUsers;
           }
           this.save();
           return this.getAllOrders();
@@ -809,7 +906,7 @@ class ConfApi {
     // 2. Hapus dari Server Hosting (api.php)
     const apiUrl = this.getApiPhpUrl();
     try {
-      await fetch(`${apiUrl}?action=delete_order&id=${encodeURIComponent(orderId)}`, {
+      await fetch(`${apiUrl}?action=delete_order&id=${encodeURIComponent(orderId)}&t=` + Date.now(), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: orderId })
@@ -817,6 +914,9 @@ class ConfApi {
       console.log('[CONFindo] Order berhasil dihapus permanen dari server 🗑️', orderId);
     } catch (e) {
       console.warn('[CONFindo] Error menghapus pesanan di server:', e);
+      try {
+        await fetch(`${apiUrl}?action=delete_order&id=${encodeURIComponent(orderId)}&t=` + Date.now());
+      } catch (err) {}
     }
     return { success: true };
   }
@@ -835,7 +935,7 @@ class ConfApi {
     // 2. Hapus dari Server Hosting (api.php)
     const apiUrl = this.getApiPhpUrl();
     try {
-      await fetch(`${apiUrl}?action=delete_user&id=${encodeURIComponent(userId)}`, {
+      await fetch(`${apiUrl}?action=delete_user&id=${encodeURIComponent(userId)}&t=` + Date.now(), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: userId })
@@ -843,6 +943,9 @@ class ConfApi {
       console.log('[CONFindo] User berhasil dihapus permanen dari server 🗑️', userId);
     } catch (e) {
       console.warn('[CONFindo] Error menghapus pengguna di server:', e);
+      try {
+        await fetch(`${apiUrl}?action=delete_user&id=${encodeURIComponent(userId)}&t=` + Date.now());
+      } catch (err) {}
     }
     return { success: true };
   }
