@@ -54,25 +54,36 @@
           <span id="loginNoticeText" class="leading-relaxed font-semibold">Silakan login untuk melanjutkan ke halaman yang dituju.</span>
         </div>
 
-        <!-- 1-Click Demo Login Shortcut (Khusus Pembelajar) -->
+        <!-- 1-Click Demo Login Shortcut -->
         <div class="p-3 bg-blue-50/70 rounded-2xl border border-blue-100 space-y-2">
           <span class="text-[10px] font-extrabold uppercase text-brand-blue tracking-wider block text-center">
-            ⚡ Masuk Cepat Demo Siswa:
+            ⚡ MASUK CEPAT DEMO:
           </span>
-          <button 
-            type="button" 
-            onclick="demoLogin('dimas@example.com', 'user123')"
-            class="w-full p-2.5 rounded-xl bg-white border border-slate-200 hover:border-blue-400 font-bold text-slate-800 text-left transition-all flex items-center justify-between"
-          >
-            <div class="flex items-center gap-2.5">
-              <span class="text-lg">🎓</span>
-              <div>
-                <span class="block text-brand-blue text-xs font-bold">Akun Demo Siswa (Dimas Pratama)</span>
-                <span class="text-[10px] text-slate-400 font-normal">Akses mandiri latihan, video, & katalog store digital</span>
+          <div class="grid grid-cols-2 gap-2">
+            <button 
+              type="button" 
+              onclick="demoLogin('dimas@example.com', 'user123')"
+              class="p-2.5 rounded-xl bg-white border border-slate-200 hover:border-blue-400 font-bold text-slate-800 text-left transition-all hover:shadow-xs group cursor-pointer"
+            >
+              <div class="flex items-center gap-1.5 mb-0.5">
+                <span class="text-xs">🎓</span>
+                <span class="text-xs font-bold text-slate-800 group-hover:text-brand-blue">Akun Siswa</span>
               </div>
-            </div>
-            <span class="text-xs font-bold text-brand-blue px-2 py-1 bg-blue-50 rounded-lg">Masuk →</span>
-          </button>
+              <span class="text-[10px] text-slate-400 block font-normal">Dimas Pratama</span>
+            </button>
+
+            <button 
+              type="button" 
+              onclick="demoLogin('admin@confindo.id', 'Admin#CONFindo2026!')"
+              class="p-2.5 rounded-xl bg-white border border-slate-200 hover:border-amber-400 font-bold text-slate-800 text-left transition-all hover:shadow-xs group cursor-pointer"
+            >
+              <div class="flex items-center gap-1.5 mb-0.5">
+                <span class="text-xs">🛡️</span>
+                <span class="text-xs font-bold text-slate-800 group-hover:text-amber-600">Akun Admin</span>
+              </div>
+              <span class="text-[10px] text-slate-400 block font-normal">Admin CONFindo</span>
+            </button>
+          </div>
         </div>
 
         <!-- Tab Toggle (Login vs Register) -->
@@ -228,6 +239,11 @@
     }
 
     function demoLogin(email, pass) {
+      const emailInput = document.getElementById('loginEmail');
+      const passInput = document.getElementById('loginPassword');
+      if (emailInput) emailInput.value = email;
+      if (passInput) passInput.value = pass;
+
       const res = window.confApi.login(email, pass);
       if (res.success) {
         redirectPostAuth(res.user);
