@@ -147,7 +147,7 @@
             
             <a 
               id="detailBuyBtn" 
-              href="#" 
+              href="../checkout/index.html" 
               class="px-8 py-4 rounded-xl bg-[#E65C00] hover:bg-[#CC5200] text-white font-bold text-sm shadow-md transition-all text-center flex items-center justify-center gap-2"
             >
               <span>Beli Sekarang (Scan QRIS)</span>
@@ -329,7 +329,7 @@
 
   <!-- Scripts -->
   <script src="../js/data.js"></script>
-  <script src="../js/api.js"></script>
+  <script src="../js/api.js?v=20261028_v8"></script>
   <script src="../js/navbar.js"></script>
   <script>
     let currentProd = null;
@@ -342,13 +342,21 @@
       }
 
       const params = new URLSearchParams(window.location.search);
-      const prodId = params.get('id') || 'prod-buku-ajar-public-speaking';
+      const rawId = params.get('id') || 'prod-buku-ajar-public-speaking';
 
-      currentProd = window.confApi ? window.confApi.getProductById(prodId) : null;
+      currentProd = window.confApi ? window.confApi.getProductById(rawId) : null;
+      if (!currentProd && typeof CONF_DATA !== 'undefined' && Array.isArray(CONF_DATA.products)) {
+        currentProd = CONF_DATA.products[0];
+      }
       if (!currentProd) {
         alert('Produk tidak ditemukan!');
         window.location.href = 'index.html';
         return;
+      }
+
+      // Automatically normalize clean URL in address bar if there were typos or spaces
+      if (currentProd && params.get('id') !== currentProd.id && window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', `product.html?id=${currentProd.id}`);
       }
 
       document.title = `${currentProd.name} (PDF) — CONFindo Store`;

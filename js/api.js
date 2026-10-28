@@ -485,10 +485,69 @@ class ConfApi {
   }
 
   getProductById(id) {
-    if (!id) return null;
-    let targetId = id;
-    if (targetId === 'prod-presentation-checklist') targetId = 'prod-checklist-pro';
-    return this.db.products.find(p => p.id === targetId || (targetId === 'prod-checklist-pro' && p.id === 'prod-presentation-checklist'));
+    if (!this.db || !Array.isArray(this.db.products) || this.db.products.length === 0) {
+      if (typeof CONF_DATA !== 'undefined' && Array.isArray(CONF_DATA.products) && CONF_DATA.products.length > 0) {
+        return CONF_DATA.products[0];
+      }
+      return null;
+    }
+
+    if (!id) return this.db.products[0];
+
+    const rawId = String(id).trim();
+    // Normalize: lowercase, replace spaces and underscores with hyphens
+    const cleanId = rawId.toLowerCase().replace(/[\s_+]+/g, '-');
+
+    // 1. Exact ID match
+    let found = this.db.products.find(p => p.id && p.id.toLowerCase() === rawId.toLowerCase());
+    if (found) return found;
+
+    // 2. Normalized hyphenated ID match (e.g. "prod speech script" -> "prod-speech-script")
+    found = this.db.products.find(p => p.id && p.id.toLowerCase() === cleanId);
+    if (found) return found;
+
+    // 3. Match with or without "prod-" prefix
+    const withProd = cleanId.startsWith('prod-') ? cleanId : ('prod-' + cleanId);
+    const withoutProd = cleanId.startsWith('prod-') ? cleanId.replace(/^prod-/, '') : cleanId;
+
+    found = this.db.products.find(p => p.id && (p.id.toLowerCase() === withProd || p.id.toLowerCase().replace(/^prod-/, '') === withoutProd));
+    if (found) return found;
+
+    // 4. Aliases for common product keywords
+    if (cleanId.includes('speech') || cleanId.includes('script') || cleanId.includes('naskah') || cleanId.includes('pidato')) {
+      found = this.db.products.find(p => p.id === 'prod-speech-script' || p.id === 'prod-template-naskah-pidato');
+      if (found) return found;
+    }
+    if (cleanId.includes('buku') || cleanId.includes('ajar') || cleanId.includes('starter') || cleanId.includes('isbn')) {
+      found = this.db.products.find(p => p.id === 'prod-buku-ajar-public-speaking');
+      if (found) return found;
+    }
+    if (cleanId.includes('presentation') || cleanId.includes('template') || cleanId.includes('slide') || cleanId.includes('powerpoint')) {
+      found = this.db.products.find(p => p.id === 'prod-presentation-template');
+      if (found) return found;
+    }
+    if (cleanId.includes('checklist')) {
+      found = this.db.products.find(p => p.id === 'prod-checklist-pro' || p.id === 'prod-presentation-checklist');
+      if (found) return found;
+    }
+    if (cleanId.includes('interview') || cleanId.includes('wawancara')) {
+      found = this.db.products.find(p => p.id === 'prod-interview-prep');
+      if (found) return found;
+    }
+    if (cleanId.includes('journal') || cleanId.includes('jurnal')) {
+      found = this.db.products.find(p => p.id === 'prod-practice-journal');
+      if (found) return found;
+    }
+
+    // 5. Match by product Name or Title substring
+    found = this.db.products.find(p => {
+      const pName = ((p.name || '') + ' ' + (p.title || '')).toLowerCase();
+      return pName.includes(cleanId.replace(/-/g, ' ')) || pName.includes(withoutProd.replace(/-/g, ' '));
+    });
+    if (found) return found;
+
+    // 6. Safe fallback: never return null to avoid breaking product details or checkout
+    return this.db.products[0];
   }
 
   getProductPdfUrl(productId, fromSubfolder = true) {

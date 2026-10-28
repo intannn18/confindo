@@ -468,10 +468,18 @@
       const prodId = params.get('id') || 'prod-buku-ajar-public-speaking';
 
       currentProd = window.confApi ? window.confApi.getProductById(prodId) : null;
+      if (!currentProd && typeof CONF_DATA !== 'undefined' && Array.isArray(CONF_DATA.products)) {
+        currentProd = CONF_DATA.products[0];
+      }
       if (!currentProd) {
         alert('Produk tidak ditemukan!');
         window.location.href = '../store/index.html';
         return;
+      }
+
+      // Sync URL if ID was formatted with spaces or typos
+      if (currentProd && params.get('id') !== currentProd.id && window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', `index.html?id=${currentProd.id}`);
       }
 
       // Populate Product Summary
