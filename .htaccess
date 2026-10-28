@@ -12,12 +12,23 @@
   RewriteEngine On
   RewriteBase /
 
-  # Serve existing files and directories
+  # ----------------------------------------------------------------------
+  # 1. Force HTTPS (Otomatis alihkan HTTP ke HTTPS yang aman)
+  # ----------------------------------------------------------------------
+  RewriteCond %{HTTPS} off [OR]
+  RewriteCond %{HTTP:X-Forwarded-Proto} =http
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # ----------------------------------------------------------------------
+  # 2. Akses file atau folder yang memang ada secara langsung
+  # ----------------------------------------------------------------------
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
 
-  # Clean URLs rewrites
+  # ----------------------------------------------------------------------
+  # 3. Clean URLs rewrites (URL cantik tanpa .html)
+  # ----------------------------------------------------------------------
   RewriteRule ^learn/?$ learn/index.html [L]
   RewriteRule ^practice/?$ practice/index.html [L]
   RewriteRule ^tools/?$ tools/index.html [L]
