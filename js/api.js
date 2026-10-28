@@ -10,7 +10,7 @@ class ConfApi {
     this.initDatabase();
     if (typeof window !== 'undefined') {
       setTimeout(() => {
-        this.fetchOrdersFromSupabase();
+        this.fetchOrdersFromServer();
       }, 50);
     }
   }
@@ -471,8 +471,71 @@ class ConfApi {
   }
 
   // ==========================================
+  // Native Hosting Backend (api.php) Integration
   // ==========================================
-  // Supabase Cloud Integration Helper
+  getApiPhpUrl() {
+    if (typeof window === 'undefined') return 'api.php';
+    const loc = window.location;
+    if (loc.protocol && loc.protocol.startsWith('http')) {
+      const path = loc.pathname;
+      const cleanPath = path.replace(/\/(admin|login|catalog|checkout|challenge|latihan|tutorial|auth)(\/.*)?$/i, '');
+      const base = cleanPath.endsWith('/') ? cleanPath : cleanPath + '/';
+      return base + 'api.php';
+    }
+    return '../api.php';
+  }
+
+  async saveOrderToServer(orderData) {
+    const apiUrl = this.getApiPhpUrl();
+    try {
+      const res = await fetch(`${apiUrl}?action=create_order`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+      });
+      if (res.ok) {
+        console.log('[CONFindo] Order successfully saved to Hosting Backend (api.php) 🚀', orderData.id);
+        return true;
+      }
+    } catch (e) {
+      console.warn('[CONFindo] Native PHP API save notice:', e);
+    }
+    // Also backup to Supabase if reachable
+    try {
+      await this.saveOrderToSupabase(orderData);
+    } catch (err) {}
+    return false;
+  }
+
+  async fetchOrdersFromServer() {
+    const apiUrl = this.getApiPhpUrl();
+    try {
+      const res = await fetch(`${apiUrl}?action=get_orders&t=` + Date.now());
+      if (res.ok) {
+        const serverOrders = await res.json();
+        if (Array.isArray(serverOrders) && serverOrders.length > 0) {
+          console.log('[CONFindo] Orders loaded from Hosting Server (api.php) 🚀', serverOrders.length);
+          const serverIds = new Set(serverOrders.map(o => o.id));
+          const localOnly = this.db.orders.filter(o => !serverIds.has(o.id));
+          this.db.orders = [...serverOrders, ...localOnly];
+          this.save();
+          return this.getAllOrders();
+        }
+      }
+    } catch (e) {
+      console.warn('[CONFindo] Native PHP API fetch notice:', e);
+    }
+    // Fallback to Supabase
+    return this.fetchOrdersFromSupabaseOriginal();
+  }
+
+  // Backward compatibility alias for UI components
+  async fetchOrdersFromSupabase() {
+    return this.fetchOrdersFromServer();
+  }
+
+  // ==========================================
+  // Supabase Cloud Integration Helper (Fallback)
   // ==========================================
   getSupabaseConfig() {
     if (typeof SUPABASE_CONFIG !== 'undefined' && SUPABASE_CONFIG && typeof SUPABASE_CONFIG.isConfigured === 'function' && SUPABASE_CONFIG.isConfigured()) {
@@ -515,9 +578,6 @@ class ConfApi {
       if (res.ok) {
         console.log('[CONFindo] Order successfully saved to Supabase Cloud ☁️', orderData.id);
         return true;
-      } else {
-        const err = await res.text();
-        console.warn('[CONFindo] Supabase order save rejected:', err);
       }
     } catch (e) {
       console.warn('[CONFindo] Supabase order network error:', e);
@@ -525,7 +585,7 @@ class ConfApi {
     return false;
   }
 
-  async fetchOrdersFromSupabase() {
+  async fetchOrdersFromSupabaseOriginal() {
     const config = this.getSupabaseConfig();
     if (!config || !config.isConfigured()) return null;
     try {
@@ -585,8 +645,8 @@ class ConfApi {
     this.db.order_items.unshift(newOrderItem);
     this.save();
 
-    // Asynchronously save to Supabase Cloud
-    this.saveOrderToSupabase(newOrder);
+    // Asynchronously save to Hosting Server (api.php) & Cloud
+    this.saveOrderToServer(newOrder);
 
     return { success: true, order: newOrder, product };
   }

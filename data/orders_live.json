@@ -1,0 +1,44 @@
+[
+  {
+    "id": "ord-1793166552528",
+    "user_id": "usr-admin-01",
+    "buyer_name": "Admin CONFindo",
+    "buyer_email": "admin@confindo.id",
+    "buyer_phone": "085725957927",
+    "buyer_notes": "Pesanan demo admin",
+    "product_name": "Public Speaking Starter Kit",
+    "total": 15000,
+    "payment_status": "paid",
+    "payment_method": "QRIS",
+    "payment_reference": "QRIS-ID1026614998627-889123",
+    "created_at": "2026-10-28T14:42:32+07:00"
+  },
+  {
+    "id": "ord-1793153861904",
+    "user_id": "usr-customer-02",
+    "buyer_name": "Gabriel",
+    "buyer_email": "gabriel.gaby1277@gmail.com",
+    "buyer_phone": "085725957927",
+    "buyer_notes": "Order via Mobile Device",
+    "product_name": "Speech Script Template Bundle",
+    "total": 12000,
+    "payment_status": "paid",
+    "payment_method": "QRIS",
+    "payment_reference": "QRIS-ID1026614998627-441209",
+    "created_at": "2026-10-28T11:11:01+07:00"
+  },
+  {
+    "id": "ORD-CONF-2026-001",
+    "user_id": "usr-dimas-02",
+    "buyer_name": "Dimas Pratama",
+    "buyer_email": "dimas@example.com",
+    "buyer_phone": "081234567890",
+    "buyer_notes": "",
+    "product_name": "Public Speaking Starter Kit",
+    "total": 15000,
+    "payment_status": "paid",
+    "payment_method": "QRIS",
+    "payment_reference": "QRIS-ID1026614998627",
+    "created_at": "2026-02-02T11:20:00Z"
+  }
+]
