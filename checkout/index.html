@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout Pembayaran QRIS & Konfirmasi Bukti Transfer — CONFindo Store Digital</title>
+  <link rel="icon" type="image/png" href="../assets/logo-icon.png">
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+          colors: {
+            brand: {
+              blue: '#0B5796',
+              blueDark: '#084375',
+              orange: '#E65C00',
+              orangeDark: '#CC5200'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Universal Navbar Placeholder -->
+  <div id="navbarContainer"></div>
+
+  <!-- Main Content -->
+  <main class="flex-grow pt-24 pb-20">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      
+      <!-- Stepper Indicator -->
+      <div class="flex items-center justify-center gap-3 text-xs font-bold">
+        <a href="../store/index.html" class="text-slate-400 hover:text-brand-blue">1. Pilih Produk Digital</a>
+        <span class="text-slate-300">→</span>
+        <span class="text-emerald-700 bg-emerald-50 px-3.5 py-1 rounded-full border border-emerald-200 shadow-sm flex items-center gap-1.5 font-extrabold">
+          <span>📲</span>
+          <span>2. Scan QRIS & Upload Bukti Transfer</span>
+        </span>
+        <span class="text-slate-300">→</span>
+        <span class="text-slate-400">3. Kirim ke WA & Akses Berkas</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+        
+        <!-- Left: Form & QRIS Payment & Upload Proof (Col 7) -->
+        <div class="md:col-span-7 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+          
+          <!-- Section 1: Customer Data for Digital License -->
+          <div class="space-y-4">
+            <div class="pb-3 border-b border-slate-100 flex items-center justify-between">
+              <div>
+                <h2 class="text-base font-bold text-slate-900">1. Data Pemesan & Pemilik Lisensi</h2>
+                <p class="text-xs text-slate-500">Data ini digunakan untuk pencatatan lisensi dan konfirmasi WhatsApp resmi.</p>
+              </div>
+              <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Personal License</span>
+            </div>
+
+            <div class="space-y-3 text-xs">
+              <div>
+                <label for="buyerName" class="block font-bold text-slate-700 mb-1">Nama Lengkap Pemesan <span class="text-rose-500">*</span></label>
+                <input 
+                  type="text" 
+                  id="buyerName" 
+                  placeholder="Contoh: Dimas Pratama" 
+                  class="w-full p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-brand-blue font-semibold text-slate-900"
+                  required
+                >
+              </div>
+
+              <div>
+                <label for="buyerPhone" class="block font-bold text-slate-700 mb-1">Nomor WhatsApp / HP Aktif <span class="text-rose-500">*</span></label>
+                <input 
+                  type="tel" 
+                  id="buyerPhone" 
+                  placeholder="Contoh: 081234567890" 
+                  class="w-full p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-brand-blue font-semibold text-slate-900"
+                  required
+                >
+                <span class="text-[10px] text-slate-400 mt-1 block">Nomor WhatsApp yang akan digunakan untuk mengirim konfirmasi dan bukti transfer.</span>
+              </div>
+
+              <div>
+                <label for="buyerEmail" class="block font-bold text-slate-700 mb-1">Alamat Email Penerima Berkas <span class="text-rose-500">*</span></label>
+                <input 
+                  type="email" 
+                  id="buyerEmail" 
+                  placeholder="nama@email.com" 
+                  class="w-full p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-brand-blue font-semibold text-slate-900"
+                  required
+                >
+                <span class="text-[10px] text-slate-400 mt-1 block">Tautan berkas digital dan sertifikat akan dikaitkan ke email ini.</span>
+              </div>
+
+              <div>
+                <label for="buyerNotes" class="block font-bold text-slate-700 mb-1">Catatan Tambahan (Opsional)</label>
+                <input 
+                  type="text" 
+                  id="buyerNotes" 
+                  placeholder="Contoh: Pembelian untuk latihan mandiri sidang/interview" 
+                  class="w-full p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-brand-blue font-medium text-slate-700"
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: QRIS ONLY Payment (Scan QRIS) -->
+          <div class="space-y-4 pt-2">
+            <div class="pb-3 border-b border-slate-100 flex items-center justify-between">
+              <div>
+                <h2 class="text-base font-bold text-slate-900">2. Scan Kode QRIS Resmi CONFindo</h2>
+                <p class="text-xs text-slate-500">Scan QRIS menggunakan aplikasi m-Banking atau E-Wallet apa pun.</p>
+              </div>
+              <span class="text-[10px] font-extrabold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200">
+                📲 QRIS Resmi
+              </span>
+            </div>
+
+            <!-- QRIS Official Showcase Box -->
+            <div class="bg-gradient-to-b from-slate-50 to-white rounded-3xl p-5 sm:p-6 border-2 border-blue-100 shadow-sm space-y-4">
+              
+              <!-- QRIS Header Info -->
+              <div class="flex items-center justify-between pb-3 border-b border-slate-200 text-xs">
+                <div>
+                  <div class="flex items-center gap-1.5">
+                    <span class="font-black text-rose-600 text-sm tracking-wider">QRIS</span>
+                    <span class="text-[10px] font-bold text-slate-500 bg-slate-200/80 px-2 py-0.5 rounded">Standar Nasional</span>
+                  </div>
+                  <p class="text-xs font-bold text-slate-900 mt-0.5">CONFINDO, Service</p>
+                </div>
+                <div class="text-right">
+                  <span class="text-[10px] font-mono font-bold text-slate-600 block">NMID: ID1026614998627</span>
+                  <span class="text-[10px] text-slate-400 block">A01 • Cetak: 93600915</span>
+                </div>
+              </div>
+
+              <!-- Tagihan Total Pill -->
+              <div class="bg-blue-50/80 rounded-2xl p-3 text-center border border-blue-200 flex flex-col sm:flex-row items-center justify-between px-5 gap-2">
+                <span class="text-xs font-bold text-slate-700">Nominal yang Harus Ditransfer:</span>
+                <span id="qrisTagihanTotal" class="text-xl sm:text-2xl font-black text-brand-orange">Rp 15.000</span>
+              </div>
+
+              <!-- QRIS Image Card -->
+              <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-inner flex flex-col items-center justify-center text-center space-y-3">
+                <div class="relative group">
+                  <img 
+                    src="../assets/qris-confindo.jpg" 
+                    alt="Kode QRIS Resmi CONFINDO" 
+                    class="w-full max-w-[270px] sm:max-w-[300px] h-auto object-contain rounded-xl border border-slate-200 shadow-sm"
+                  >
+                  <div class="absolute inset-0 bg-black/0 group-hover:bg-black/5 rounded-xl transition-colors pointer-events-none"></div>
+                </div>
+                <div class="text-[11px] text-slate-500 font-medium">
+                  Buka m-Banking atau E-Wallet Anda, pilih Scan QRIS, lalu bayar sesuai nominal di atas.
+                </div>
+              </div>
+
+              <!-- Supported Payment Partners -->
+              <div class="pt-1">
+                <p class="text-[11px] font-bold text-slate-500 text-center mb-2">Didukung oleh seluruh aplikasi pembayaran berstandar QRIS:</p>
+                <div class="flex flex-wrap items-center justify-center gap-1.5 text-[10px] font-bold text-slate-700">
+                  <span class="px-2.5 py-1 bg-white rounded-lg border border-slate-200 shadow-2xs">BCA Mobile</span>
+                  <span class="px-2.5 py-1 bg-white rounded-lg border border-slate-200 shadow-2xs">Mandiri Livin'</span>
+                  <span class="px-2.5 py-1 bg-white rounded-lg border border-slate-200 shadow-2xs">BRImo</span>
+                  <span class="px-2.5 py-1 bg-white rounded-lg border border-slate-200 shadow-2xs">BNI Mobile</span>
+                  <span class="px-2.5 py-1 bg-white rounded-lg border border-slate-200 shadow-2xs">GoPay</span>
+                  <span class="px-2.5 py-1 bg-white rounded-lg border border-slate-200 shadow-2xs">OVO</span>
+                  <span class="px-2.5 py-1 bg-white rounded-lg border border-slate-200 shadow-2xs">Dana</span>
+                  <span class="px-2.5 py-1 bg-white rounded-lg border border-slate-200 shadow-2xs">ShopeePay</span>
+                  <span class="px-2.5 py-1 bg-white rounded-lg border border-slate-200 shadow-2xs">LinkAja</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Section 3: Upload Bukti Transfer / QRIS (MANDATORY BEFORE PROCEEDING) -->
+          <div class="space-y-4 pt-2">
+            <div class="pb-3 border-b border-slate-100 flex items-center justify-between">
+              <div>
+                <h2 class="text-base font-bold text-slate-900">3. Upload Bukti Transfer / Scan QRIS</h2>
+                <p class="text-xs text-slate-500">Bukti pembayaran <strong>wajib diunggah</strong> sebelum dapat dikonfirmasi ke admin.</p>
+              </div>
+              <span class="text-[10px] font-extrabold text-rose-600 bg-rose-50 px-2.5 py-1 rounded-full border border-rose-200">
+                * Wajib Diupload
+              </span>
+            </div>
+
+            <!-- Upload Dropzone Card -->
+            <div class="space-y-3">
+              <div 
+                id="uploadDropzone" 
+                onclick="document.getElementById('receiptFileInput').click()"
+                class="border-2 border-dashed border-slate-300 hover:border-emerald-500 bg-slate-50 hover:bg-emerald-50/30 rounded-2xl p-6 text-center cursor-pointer transition-all space-y-3 group"
+              >
+                <input 
+                  type="file" 
+                  id="receiptFileInput" 
+                  accept="image/png, image/jpeg, image/jpg, image/webp" 
+                  class="hidden" 
+                  onchange="handleReceiptFileSelected(event)"
+                >
+                
+                <!-- Placeholder when no file uploaded yet -->
+                <div id="uploadPlaceholder" class="space-y-2">
+                  <div class="w-12 h-12 rounded-2xl bg-white border border-slate-200 text-slate-400 group-hover:text-emerald-600 group-hover:border-emerald-300 flex items-center justify-center mx-auto text-2xl transition-all shadow-2xs">
+                    📷
+                  </div>
+                  <div>
+                    <p class="text-xs font-bold text-slate-800 group-hover:text-emerald-700">
+                      Klik di sini untuk Memilih / Upload Foto Bukti Transfer QRIS
+                    </p>
+                    <p class="text-[11px] text-slate-400 mt-0.5">
+                      Screenshot bukti pembayaran (JPG, PNG, atau WebP)
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Preview Container (Visible after file uploaded) -->
+                <div id="uploadPreviewBox" class="hidden space-y-3">
+                  <div class="relative inline-block mx-auto rounded-xl overflow-hidden border-2 border-emerald-500 shadow-md max-w-[260px]">
+                    <img id="receiptPreviewImg" src="" alt="Bukti Transfer" class="w-full max-h-56 object-contain bg-white">
+                    <div class="absolute top-2 right-2 bg-emerald-600 text-white rounded-full p-1 shadow-sm">
+                      <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                    </div>
+                  </div>
+                  <div class="text-xs">
+                    <span id="receiptFileName" class="font-bold text-slate-800 block truncate max-w-xs mx-auto">bukti-transfer.jpg</span>
+                    <span id="receiptFileSize" class="text-[10px] text-slate-400 block">120 KB</span>
+                    <p class="text-emerald-700 font-bold text-[11px] mt-1">✓ Bukti Transfer Siap Dikirim ke WhatsApp Admin!</p>
+                    <button 
+                      type="button" 
+                      onclick="event.stopPropagation(); document.getElementById('receiptFileInput').click()" 
+                      class="text-[11px] text-brand-blue font-semibold hover:underline mt-1 inline-block"
+                    >
+                      Ganti Foto Bukti
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Mandatory Warning (shown if user tries to submit without uploading) -->
+              <div id="uploadWarningNotice" class="hidden p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs flex items-center gap-2">
+                <span class="text-base shrink-0">⚠️</span>
+                <span class="font-semibold">Bukti transfer belum diunggah! Anda tidak dapat mengirim pesanan sebelum melampirkan screenshot atau foto bukti pembayaran QRIS.</span>
+              </div>
+            </div>
+
+            <!-- Primary Action Button: Kirim Bukti ke WhatsApp Admin -->
+            <div class="pt-3 space-y-3">
+              <button 
+                id="paySubmitBtn" 
+                type="button" 
+                onclick="submitPaymentWithProof()" 
+                class="w-full py-4 rounded-2xl bg-[#25D366] hover:bg-[#1EBE5D] text-white font-extrabold text-sm sm:text-base shadow-lg transition-all flex items-center justify-center gap-2.5 tracking-wide transform active:scale-98"
+              >
+                <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.694.06-2.146-.541-1.859-.77-3.048-2.658-3.14-2.782-.093-.124-.755-.996-.755-1.911 0-.915.48-1.365.65-1.55.17-.186.372-.232.496-.232.124 0 .248.002.356.007.114.006.267-.043.418.32.155.372.531 1.29.578 1.383.046.093.077.201.015.324-.062.124-.093.201-.186.31-.093.108-.196.242-.28.325-.093.093-.19.194-.082.38.109.186.483.797 1.036 1.29.712.635 1.312.832 1.498.924.186.093.294.077.402-.046.108-.124.465-.541.589-.727.124-.186.248-.155.418-.093.17.062 1.083.511 1.269.604.186.093.31.14.356.217.046.077.046.45-.098.855zM12 2C6.477 2 2 6.477 2 12c0 1.891.524 3.66 1.436 5.176L2 22l4.981-1.396A9.957 9.957 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
+                <span>Konfirmasi & Kirim Bukti Transfer ke WhatsApp</span>
+                <span>→</span>
+              </button>
+
+              <p class="text-[11px] text-slate-500 text-center">
+                Setelah menekan tombol di atas, Anda akan langsung dialihkan ke chat WhatsApp resmi Admin CONFindo untuk mengirimkan bukti transfer.
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Right: Order Summary (Col 5) -->
+        <div class="md:col-span-5 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-5">
+          <div class="pb-3 border-b border-slate-100">
+            <h3 class="text-base font-bold text-slate-900">Ringkasan Pesanan Produk</h3>
+            <p class="text-xs text-slate-500">Berkas digital berlisensi seumur hidup.</p>
+          </div>
+
+          <!-- Product Item Card -->
+          <div class="flex items-center gap-4">
+            <img id="sumImg" src="" alt="" class="w-16 h-20 rounded-xl object-cover bg-slate-100 shrink-0 border border-slate-200 shadow-sm">
+            <div class="flex-1 min-w-0 space-y-1">
+              <span id="sumBadge" class="text-[10px] font-bold text-[#E65C00] bg-orange-50 px-2 py-0.5 rounded-full inline-block">Store Digital</span>
+              <h4 id="sumTitle" class="text-xs font-bold text-slate-900 truncate">Nama Produk</h4>
+              <p id="sumFormat" class="text-[11px] text-slate-500">Dokumen PDF Digital Asli</p>
+              <span id="sumItemPrice" class="text-xs font-bold text-brand-blue block">Rp 15.000</span>
+            </div>
+          </div>
+
+          <!-- Price Calculation -->
+          <div class="space-y-2 pt-3 border-t border-slate-100 text-xs text-slate-600">
+            <div class="flex justify-between">
+              <span>Harga Normal:</span>
+              <span id="sumOriginalPrice" class="line-through text-slate-400">Rp 35.000</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Potongan Diskon:</span>
+              <span id="sumDiscount" class="text-rose-600 font-semibold">- Rp 20.000</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Metode Pembayaran:</span>
+              <span class="text-emerald-700 font-bold">QRIS Resmi (Tanpa Biaya Admin)</span>
+            </div>
+            <div class="flex justify-between font-bold text-slate-900 pt-3 border-t border-slate-100 text-sm">
+              <span>Total Tagihan:</span>
+              <span id="sumTotal" class="text-brand-orange text-lg font-extrabold">Rp 15.000</span>
+            </div>
+          </div>
+
+          <!-- WhatsApp Verification Notice -->
+          <div class="p-4 bg-emerald-50/70 rounded-2xl border border-emerald-200 text-[11px] text-emerald-950 space-y-2">
+            <div class="font-bold flex items-center gap-1.5 text-emerald-800">
+              <span>💬</span>
+              <span>Proses Konfirmasi WhatsApp Cepat:</span>
+            </div>
+            <p class="leading-relaxed text-slate-600">
+              Setelah bukti pembayaran dikirimkan ke WhatsApp resmi admin, status pesanan akan langsung aktif dan berkas digital dapat langsung diunduh serta dibuka di Online Reader.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Payment Submission & WhatsApp Proof Modal -->
+  <div id="paySuccessModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 modal-backdrop bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl modal-content-box border border-slate-200 text-center space-y-5">
+      
+      <!-- WhatsApp Icon with pulse -->
+      <div class="relative w-16 h-16 mx-auto flex items-center justify-center">
+        <div class="absolute inset-0 rounded-2xl bg-emerald-200 animate-ping opacity-30"></div>
+        <div class="relative z-10 w-16 h-16 rounded-2xl bg-[#25D366] text-white flex items-center justify-center text-3xl font-extrabold shadow-md">
+          <svg class="w-8 h-8 fill-current" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.694.06-2.146-.541-1.859-.77-3.048-2.658-3.14-2.782-.093-.124-.755-.996-.755-1.911 0-.915.48-1.365.65-1.55.17-.186.372-.232.496-.232.124 0 .248.002.356.007.114.006.267-.043.418.32.155.372.531 1.29.578 1.383.046.093.077.201.015.324-.062.124-.093.201-.186.31-.093.108-.196.242-.28.325-.093.093-.19.194-.082.38.109.186.483.797 1.036 1.29.712.635 1.312.832 1.498.924.186.093.294.077.402-.046.108-.124.465-.541.589-.727.124-.186.248-.155.418-.093.17.062 1.083.511 1.269.604.186.093.31.14.356.217.046.077.046.45-.098.855zM12 2C6.477 2 2 6.477 2 12c0 1.891.524 3.66 1.436 5.176L2 22l4.981-1.396A9.957 9.957 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
+        </div>
+      </div>
+
+      <div>
+        <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+          💬 Langkah Terakhir: Kirim Bukti ke WhatsApp Admin
+        </span>
+        <h3 class="text-xl font-extrabold text-slate-900 mt-2">Pesanan Siap Dikonfirmasi!</h3>
+        <p class="text-xs text-slate-500 mt-1">Order ID: <span id="successOrderId" class="font-mono font-bold text-slate-800"></span></p>
+      </div>
+
+      <!-- Instruction steps box -->
+      <div class="p-4 bg-emerald-50/80 rounded-2xl border border-emerald-200 text-left text-xs text-emerald-950 space-y-1.5">
+        <p class="font-bold text-emerald-900 flex items-center gap-1.5">
+          <span>📲</span>
+          <span>Panduan Pengiriman ke WhatsApp:</span>
+        </p>
+        <ol class="list-decimal list-inside space-y-1 text-[11px] text-slate-700">
+          <li>Pesan format pemesanan otomatis terisi ke Admin CONFindo (<strong>+62 857-2595-7927</strong>).</li>
+          <li>Kirim pesan tersebut, lalu <strong>lampirkan foto/screenshot bukti transfer Anda</strong> di chat WA.</li>
+          <li>Admin akan memverifikasi dalam beberapa menit.</li>
+        </ol>
+      </div>
+
+      <!-- Uploaded Receipt Preview in Modal -->
+      <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 text-left space-y-2">
+        <div class="flex items-center justify-between text-xs">
+          <span class="font-bold text-slate-700 text-[11px]">Foto Bukti Pembayaran QRIS Anda:</span>
+          <span id="successTotalDisplay" class="font-extrabold text-brand-orange">Rp 15.000</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <img id="modalReceiptPreviewImg" src="" alt="Bukti Transfer" class="w-16 h-20 object-contain rounded-xl border border-slate-200 bg-white">
+          <div class="text-xs space-y-0.5 min-w-0 flex-1">
+            <p id="successProdTitle" class="font-bold text-slate-900 truncate">Buku Ajar: Public Speaking</p>
+            <p id="successBuyerDisplay" class="text-[11px] text-slate-500 truncate">Dimas Pratama</p>
+            <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 inline-block">✓ Bukti Transfer Siap Dilampirkan</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons & Dedicated CTA -->
+      <div class="space-y-2.5 pt-1">
+        <!-- 1. The Main WhatsApp CTA Button -->
+        <a 
+          id="modalSendWaProofBtn" 
+          href="#" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="block w-full py-4 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2"
+        >
+          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.694.06-2.146-.541-1.859-.77-3.048-2.658-3.14-2.782-.093-.124-.755-.996-.755-1.911 0-.915.48-1.365.65-1.55.17-.186.372-.232.496-.232.124 0 .248.002.356.007.114.006.267-.043.418.32.155.372.531 1.29.578 1.383.046.093.077.201.015.324-.062.124-.093.201-.186.31-.093.108-.196.242-.28.325-.093.093-.19.194-.082.38.109.186.483.797 1.036 1.29.712.635 1.312.832 1.498.924.186.093.294.077.402-.046.108-.124.465-.541.589-.727.124-.186.248-.155.418-.093.17.062 1.083.511 1.269.604.186.093.31.14.356.217.046.077.046.45-.098.855zM12 2C6.477 2 2 6.477 2 12c0 1.891.524 3.66 1.436 5.176L2 22l4.981-1.396A9.957 9.957 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
+          <span>Kirim Bukti QRIS ke WhatsApp Admin Sekarang</span>
+          <span>→</span>
+        </a>
+
+        <!-- 2. Copy order format text -->
+        <button 
+          type="button" 
+          onclick="copyOrderFormatText()" 
+          class="block w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5"
+        >
+          <span>📋 Salin Format Pesanan WhatsApp</span>
+        </button>
+
+        <!-- 3. Direct access buttons -->
+        <a 
+          id="instantDownloadPdfBtn" 
+          href="#" 
+          download 
+          class="block w-full py-3 rounded-xl bg-[#E65C00] hover:bg-[#CC5200] text-white text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-2"
+        >
+          <span>⬇️ Unduh Berkas Asli (.pdf / .pptx)</span>
+        </a>
+
+        <a 
+          id="instantReaderBtn" 
+          href="#" 
+          class="block w-full py-2.5 rounded-xl bg-[#0B5796] hover:bg-[#084375] text-white text-xs font-bold transition-all shadow-sm"
+        >
+          📖 Buka di Online Reader
+        </a>
+
+        <div class="flex items-center gap-2 pt-1">
+          <a 
+            href="../dashboard/index.html" 
+            class="flex-1 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold text-center transition-all"
+          >
+            Ke Dashboard
+          </a>
+          <a 
+            href="../store/index.html" 
+            class="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold text-center transition-all"
+          >
+            Ke Store Digital
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Universal Footer Placeholder -->
+  <div id="footerContainer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/data.js"></script>
+  <script src="../js/audio.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/navbar.js"></script>
+  <script>
+    let currentProd = null;
+    let uploadedReceiptDataUrl = null;
+    let generatedWaText = '';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check login gatekeeper
+      const user = window.confApi ? window.confApi.getCurrentUser() : null;
+      if (!user) {
+        window.showLoginRequiredModal('checkout', '../', 'Login untuk Melanjutkan Pesanan', 'Silakan masuk atau daftar akun terlebih dahulu agar lisensi dan arsip berkas digital Anda dapat tersimpan di akun Anda.');
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      const prodId = params.get('id') || 'prod-buku-ajar-public-speaking';
+
+      currentProd = window.confApi ? window.confApi.getProductById(prodId) : null;
+      if (!currentProd) {
+        alert('Produk tidak ditemukan!');
+        window.location.href = '../store/index.html';
+        return;
+      }
+
+      // Populate Product Summary
+      document.getElementById('sumTitle').innerText = currentProd.name;
+      const imgUrl = window.confApi && window.confApi.getProductImageUrl ? window.confApi.getProductImageUrl(currentProd, true) : (currentProd.image.startsWith('http') ? currentProd.image : '../' + currentProd.image.replace(/^\.\.\//, ''));
+      document.getElementById('sumImg').src = imgUrl;
+      document.getElementById('sumBadge').innerText = currentProd.badge || 'Store Digital';
+      document.getElementById('sumFormat').innerText = currentProd.file_format || 'Dokumen PDF Digital';
+      
+      const formattedTotal = `Rp ${Number(currentProd.price).toLocaleString('id-ID')}`;
+      document.getElementById('sumItemPrice').innerText = formattedTotal;
+      document.getElementById('sumTotal').innerText = formattedTotal;
+      document.getElementById('qrisTagihanTotal').innerText = formattedTotal;
+
+      if (currentProd.original_price) {
+        document.getElementById('sumOriginalPrice').innerText = `Rp ${Number(currentProd.original_price).toLocaleString('id-ID')}`;
+        const disc = currentProd.original_price - currentProd.price;
+        document.getElementById('sumDiscount').innerText = `- Rp ${Number(disc).toLocaleString('id-ID')}`;
+      } else {
+        document.getElementById('sumOriginalPrice').innerText = formattedTotal;
+        document.getElementById('sumDiscount').innerText = `Rp 0`;
+      }
+
+      // Pre-fill Buyer Data if user is logged in
+      if (user) {
+        document.getElementById('buyerName').value = user.name || '';
+        document.getElementById('buyerEmail').value = user.email || '';
+      } else {
+        document.getElementById('buyerName').value = 'Dimas Pratama';
+        document.getElementById('buyerEmail').value = 'dimas@example.com';
+        document.getElementById('buyerPhone').value = '081234567890';
+      }
+    });
+
+    // Handle File Selection for Receipt Upload
+    function handleReceiptFileSelected(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      // Validate size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Ukuran file bukti transfer maksimal 5 MB.');
+        event.target.value = '';
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        uploadedReceiptDataUrl = e.target.result;
+
+        // Show preview
+        document.getElementById('receiptPreviewImg').src = uploadedReceiptDataUrl;
+        document.getElementById('receiptFileName').innerText = file.name;
+        document.getElementById('receiptFileSize').innerText = `${Math.round(file.size / 1024)} KB`;
+
+        document.getElementById('uploadPlaceholder').classList.add('hidden');
+        document.getElementById('uploadPreviewBox').classList.remove('hidden');
+        document.getElementById('uploadWarningNotice').classList.add('hidden');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Submit Payment and Direct to WhatsApp to send Proof
+    function submitPaymentWithProof() {
+      const buyerName = document.getElementById('buyerName').value.trim();
+      const buyerPhone = document.getElementById('buyerPhone').value.trim();
+      const buyerEmail = document.getElementById('buyerEmail').value.trim();
+      const buyerNotes = document.getElementById('buyerNotes') ? document.getElementById('buyerNotes').value.trim() : '';
+
+      if (!buyerName || !buyerPhone || !buyerEmail) {
+        alert('Silakan lengkapi Data Pemesan (Nama, Nomor HP/WhatsApp, dan Email) terlebih dahulu.');
+        return;
+      }
+
+      // STRICT VALIDATION: User cannot submit before uploading proof of transfer!
+      if (!uploadedReceiptDataUrl) {
+        const warning = document.getElementById('uploadWarningNotice');
+        if (warning) warning.classList.remove('hidden');
+        alert('⚠️ Bukti transfer/QRIS belum diunggah!\n\nAnda tidak bisa mengirim pesanan ke admin sebelum melampirkan screenshot atau foto bukti pembayaran QRIS.');
+        document.getElementById('uploadDropzone').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      const orderId = 'ORD-QRIS-' + Math.floor(1000 + Math.random() * 9000);
+      const isPptx = currentProd.id === 'prod-presentation-template';
+      const formatName = isPptx ? 'Master PowerPoint (.PPTX) Asli & Panduan Slide' : 'Dokumen PDF Asli (High-Res Vector)';
+      const formattedTotal = `Rp ${Number(currentProd.price).toLocaleString('id-ID')}`;
+      const waktuPesanan = new Date().toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'short' });
+
+      // Create WhatsApp order format
+      generatedWaText = `*KONFIRMASI PEMBAYARAN QRIS — CONFINDO*
+===========================================
+Halo Admin CONFindo! 👋
+Saya telah melakukan pembayaran via scan QRIS resmi dan mengunggah bukti transfer.
+
+📦 *DETAIL PESANAN:*
+• *No. Order:* ${orderId}
+• *Produk:* ${currentProd.name}
+• *Format Berkas:* ${formatName}
+• *Total Tagihan:* ${formattedTotal}
+• *Metode:* QRIS Resmi (NMID: ID1026614998627)
+• *Waktu Pembayaran:* ${waktuPesanan}
+
+👤 *DATA PEMESAN:*
+• *Nama Lengkap:* ${buyerName}
+• *No. WhatsApp:* ${buyerPhone}
+• *Email:* ${buyerEmail}
+${buyerNotes ? `• *Catatan:* ${buyerNotes}\n` : ''}
+📸 *BUKTI PEMBAYARAN QRIS:*
+(Foto/screenshot bukti pembayaran saya lampirkan di bawah ini)
+
+Mohon diverifikasi pembayarannya ya min. Terima kasih banyak! 🙏✨`;
+
+      // Save order in API database
+      let user = window.confApi ? window.confApi.getCurrentUser() : null;
+      if (!user) {
+        user = {
+          id: 'usr-customer-' + Date.now(),
+          name: buyerName,
+          email: buyerEmail,
+          role: 'user',
+          created_at: new Date().toISOString()
+        };
+        if (window.confApi) window.confApi.setCurrentUser(user);
+      }
+
+      if (window.confApi) {
+        window.confApi.createOrder(user.id, currentProd.id, 'QRIS', {
+          name: buyerName,
+          email: buyerEmail,
+          phone: buyerPhone,
+          notes: buyerNotes,
+          receiptUploaded: true
+        });
+      }
+
+      if (window.confAudio) confAudio.playSuccess();
+
+      const waTargetUrl = 'https://wa.me/6285725957927?text=' + encodeURIComponent(generatedWaText);
+
+      // Populate Modal
+      document.getElementById('successOrderId').innerText = orderId;
+      document.getElementById('successProdTitle').innerText = currentProd.name;
+      document.getElementById('successBuyerDisplay').innerText = `${buyerName} (${buyerPhone})`;
+      document.getElementById('successTotalDisplay').innerText = formattedTotal;
+      document.getElementById('modalReceiptPreviewImg').src = uploadedReceiptDataUrl;
+
+      // Set CTA link in Modal
+      const modalWaBtn = document.getElementById('modalSendWaProofBtn');
+      if (modalWaBtn) modalWaBtn.href = waTargetUrl;
+
+      // Set download and reader links
+      const readerBtn = document.getElementById('instantReaderBtn');
+      if (readerBtn) readerBtn.href = `../store/viewer.html?id=${currentProd.id}`;
+
+      const filePath = isPptx 
+        ? '../assets/templates/confindo-presentation-template-pro.pptx' 
+        : `../assets/pdf/${currentProd.pdf_filename || 'buku-ajar-public-speaking.pdf'}`;
+      const fileName = isPptx 
+        ? 'confindo-presentation-template-pro.pptx' 
+        : (currentProd.pdf_filename || `${currentProd.id}.pdf`);
+
+      const pdfDownloadBtn = document.getElementById('instantDownloadPdfBtn');
+      if (pdfDownloadBtn) {
+        pdfDownloadBtn.href = filePath;
+        pdfDownloadBtn.download = fileName;
+        pdfDownloadBtn.innerHTML = `<span>⬇️ Unduh Berkas Asli Langsung (${isPptx ? '.pptx' : '.pdf'})</span>`;
+      }
+
+      // Show Modal on screen
+      document.getElementById('paySuccessModal').classList.remove('hidden');
+
+      // Directly redirect / open WhatsApp in new tab to send receipt
+      window.open(waTargetUrl, '_blank');
+    }
+
+    function copyOrderFormatText() {
+      if (!generatedWaText) return;
+      navigator.clipboard.writeText(generatedWaText).then(() => {
+        alert('✓ Format konfirmasi pesanan WhatsApp berhasil disalin ke clipboard!');
+      });
+    }
+  </script>
+</body>
+</html>

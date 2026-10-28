@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Practice Room — CONFindo</title>
+  <meta name="description" content="Studio latihan public speaking mandiri 1 menit, generator topik acak, dan evaluasi checklist.">
+  <link rel="icon" type="image/png" href="../assets/logo-icon.png">
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+          colors: {
+            brand: {
+              blue: '#0B5796',
+              blueDark: '#084375',
+              orange: '#E65C00',
+              orangeDark: '#CC5200'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Universal Navbar Placeholder -->
+  <div id="navbarContainer"></div>
+
+  <!-- Main Content -->
+  <main class="flex-grow pt-24 pb-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Page Header -->
+      <div class="mb-12 text-center max-w-3xl mx-auto">
+        <span class="text-xs font-extrabold uppercase tracking-wider text-brand-orange bg-orange-50 px-3 py-1 rounded-full">
+          Studio Latihan Mandiri
+        </span>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-3 tracking-tight">
+          “Practice Makes Progress.”
+        </h1>
+        <p class="text-slate-600 text-sm sm:text-base mt-2">
+          Latih kemampuan bicaramu dalam format mikro 60 detik setiap hari. Tanpa rasa malu, tanpa dihakimi orang lain.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Feature 1 & 2: 1 Minute Speaking & Random Topic Generator (Col 7) -->
+        <div class="lg:col-span-7 space-y-6">
+          
+          <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm space-y-6">
+            
+            <!-- Feature 2: Random Topic Generator Header -->
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-brand-orange"></span>
+                <span class="text-xs font-bold uppercase text-slate-400 tracking-wider">Topik Latihan Aktif</span>
+              </div>
+              <button 
+                id="generateTopicBtn" 
+                type="button" 
+                class="px-3.5 py-1.5 rounded-xl border border-slate-200 hover:border-orange-400 bg-orange-50/50 hover:bg-orange-50 text-brand-orange text-xs font-bold transition-all flex items-center gap-1.5 shadow-2xs"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                <span>Generate Topic</span>
+              </button>
+            </div>
+
+            <!-- Active Topic Display -->
+            <div class="py-2">
+              <h2 id="practiceTopicTitle" class="text-xl sm:text-2xl font-extrabold text-slate-900 transition-opacity duration-200">
+                Introduce yourself
+              </h2>
+              <p id="practiceTopicPrompt" class="text-xs sm:text-sm text-slate-500 mt-2 leading-relaxed">
+                Ceritakan nama, latar belakangmu, satu keahlian utamamu, dan apa tujuan yang sedang kamu kejar saat ini.
+              </p>
+            </div>
+
+            <!-- Feature 1: 1 Minute Speaking Timer Dial -->
+            <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200/80 text-center flex flex-col items-center justify-center">
+              
+              <!-- Circular SVG Countdown -->
+              <div class="relative w-48 h-48 my-2">
+                <svg class="w-full h-full transform -rotate-90" viewBox="0 0 200 200">
+                  <circle cx="100" cy="100" r="88" stroke-width="12" fill="transparent" class="timer-circle-bg" />
+                  <circle 
+                    id="timerCircle" 
+                    cx="100" 
+                    cy="100" 
+                    r="88" 
+                    stroke-width="12" 
+                    fill="transparent" 
+                    stroke-dasharray="552.92" 
+                    stroke-dashoffset="0"
+                    class="timer-circle-progress" 
+                  />
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                  <span id="timerDisplay" class="text-4xl font-extrabold font-mono tracking-tight text-slate-900">01:00</span>
+                  <span class="text-[10px] font-bold text-slate-400 uppercase mt-0.5">60 Detik Bicara</span>
+                </div>
+              </div>
+
+              <!-- Visual Audio Wave Bar -->
+              <div id="audioWaveBox" class="h-8 flex items-center justify-center my-1">
+                <span class="audio-wave-bar"></span>
+                <span class="audio-wave-bar"></span>
+                <span class="audio-wave-bar"></span>
+                <span class="audio-wave-bar"></span>
+                <span class="audio-wave-bar"></span>
+                <span class="audio-wave-bar"></span>
+                <span class="audio-wave-bar"></span>
+                <span class="audio-wave-bar"></span>
+              </div>
+
+              <!-- Completion Notification Banner -->
+              <div id="practiceCompletedBanner" class="hidden mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-center">
+                <span class="text-xs font-bold text-emerald-800 block">🎉 Practice Completed!</span>
+                <span class="text-[11px] text-emerald-600">Sesi bicaramu telah tersimpan di database dashboard.</span>
+              </div>
+
+              <!-- Controls -->
+              <div class="flex items-center gap-3 mt-3">
+                <button 
+                  id="startTimerBtn" 
+                  type="button" 
+                  class="px-8 py-3.5 rounded-xl bg-[#0B5796] hover:bg-[#084375] text-white font-bold text-xs shadow-md transition-all flex items-center gap-2"
+                >
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                  <span>Start Timer</span>
+                </button>
+
+                <button 
+                  id="pauseTimerBtn" 
+                  type="button" 
+                  class="hidden px-7 py-3.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs transition-all"
+                >
+                  Jeda
+                </button>
+
+                <button 
+                  id="resetTimerBtn" 
+                  type="button" 
+                  class="px-4 py-3.5 rounded-xl bg-white hover:bg-slate-200 text-slate-600 border border-slate-200 font-semibold text-xs"
+                >
+                  Reset
+                </button>
+              </div>
+
+              <p class="text-[11px] text-slate-400 mt-4">
+                Tips: Jangan khawatir jika salah kata. Teruslah berbicara sampai detik terakhir!
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Feature 3: Speaking Checklist (Col 5) -->
+        <div class="lg:col-span-5">
+          <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm space-y-6">
+            
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+              <div>
+                <h3 class="text-lg font-bold text-slate-900">Speaking Checklist</h3>
+                <p class="text-xs text-slate-400">Evaluasi bicaramu setelah menyelesaikan latihan.</p>
+              </div>
+              <div class="text-right">
+                <span id="checklistScore" class="text-lg font-extrabold text-brand-blue font-mono">0 / 6</span>
+                <span class="block text-[10px] text-slate-400">Poin Tercapai</span>
+              </div>
+            </div>
+
+            <!-- Checkboxes -->
+            <div class="space-y-3">
+              <label class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200/80 hover:border-blue-300 cursor-pointer transition-colors">
+                <input type="checkbox" id="chkEye" class="chk-item custom-checkbox">
+                <div class="flex-1">
+                  <span class="text-xs font-bold text-slate-800 block">Eye Contact</span>
+                  <span class="text-[11px] text-slate-500">Mata fokus ke depan dan tidak melihat ke bawah/atas berulang kali.</span>
+                </div>
+              </label>
+
+              <label class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200/80 hover:border-blue-300 cursor-pointer transition-colors">
+                <input type="checkbox" id="chkVoice" class="chk-item custom-checkbox">
+                <div class="flex-1">
+                  <span class="text-xs font-bold text-slate-800 block">Clear Voice</span>
+                  <span class="text-[11px] text-slate-500">Suara terdengar jernih, volume mantap, dan artikulasi jelas.</span>
+                </div>
+              </label>
+
+              <label class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200/80 hover:border-blue-300 cursor-pointer transition-colors">
+                <input type="checkbox" id="chkPosture" class="chk-item custom-checkbox">
+                <div class="flex-1">
+                  <span class="text-xs font-bold text-slate-800 block">Good Posture</span>
+                  <span class="text-[11px] text-slate-500">Punggung tegak, bahu rileks, dagu sejajar.</span>
+                </div>
+              </label>
+
+              <label class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200/80 hover:border-blue-300 cursor-pointer transition-colors">
+                <input type="checkbox" id="chkGesture" class="chk-item custom-checkbox">
+                <div class="flex-1">
+                  <span class="text-xs font-bold text-slate-800 block">Natural Gesture</span>
+                  <span class="text-[11px] text-slate-500">Gerakan tangan terbuka alami mengikuti apa yang dibicarakan.</span>
+                </div>
+              </label>
+
+              <label class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200/80 hover:border-blue-300 cursor-pointer transition-colors">
+                <input type="checkbox" id="chkSpeed" class="chk-item custom-checkbox">
+                <div class="flex-1">
+                  <span class="text-xs font-bold text-slate-800 block">Appropriate Speed</span>
+                  <span class="text-[11px] text-slate-500">Tempo bicara teratur, tidak terburu-buru, ada jeda hening wajar.</span>
+                </div>
+              </label>
+
+              <label class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200/80 hover:border-blue-300 cursor-pointer transition-colors">
+                <input type="checkbox" id="chkFiller" class="chk-item custom-checkbox">
+                <div class="flex-1">
+                  <span class="text-xs font-bold text-slate-800 block">Avoid Filler Words</span>
+                  <span class="text-[11px] text-slate-500">Berhasil meminimalkan kata gumaman 'eee', 'anu', 'kayak'.</span>
+                </div>
+              </label>
+            </div>
+
+            <!-- Save Checklist Action -->
+            <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+              <button 
+                id="saveChecklistBtn" 
+                type="button" 
+                class="w-full py-3 rounded-xl bg-[#0B5796] hover:bg-[#084375] text-white font-bold text-xs shadow-sm transition-all"
+              >
+                Simpan Hasil Checklist ke Database
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Universal Footer Placeholder -->
+  <div id="footerContainer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/data.js"></script>
+  <script src="../js/audio.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/navbar.js"></script>
+  <script>
+    const topicsList = [
+      { title: "Introduce yourself", prompt: "Perkenalkan nama, latar belakangmu, apa yang sedang kamu pelajari, dan satu nilai penting dalam hidupmu." },
+      { title: "Talk about your dream job", prompt: "Deskripsikan profesi impianmu, mengapa peran itu penting, dan bagaimana kamu mempersiapkannya." },
+      { title: "Describe your favorite place", prompt: "Gambarkan tempat yang paling kamu sukai dengan detail suasana, suara, aroma, dan kenangan di sana." },
+      { title: "Explain your favorite product", prompt: "Jelaskan satu produk atau aplikasi favoritmu seolah-olah kamu merekomendasikannya ke sahabat." },
+      { title: "Talk about your biggest achievement", prompt: "Ceritakan pencapaian yang paling kamu banggakan dan rintangan apa yang harus kamu lalui." },
+      { title: "Why consistency beats talent", prompt: "Berikan argumentasi singkat mengapa konsistensi latihan 1 menit sehari mengalahkan bakat alami." },
+      { title: "The best advice you ever received", prompt: "Ceritakan satu nasihat terbaik yang pernah kamu terima dan bagaimana itu mengubah cara pandangmu." }
+    ];
+
+    let currentTopicIndex = 0;
+    let timeLeft = 60;
+    let timerRunning = false;
+    let timerInterval = null;
+
+    function renderActiveTopic() {
+      const item = topicsList[currentTopicIndex];
+      const titleEl = document.getElementById('practiceTopicTitle');
+      const promptEl = document.getElementById('practiceTopicPrompt');
+      titleEl.innerText = item.title;
+      promptEl.innerText = item.prompt;
+    }
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(timeLeft / 60);
+      const secs = timeLeft % 60;
+      document.getElementById('timerDisplay').innerText = 
+        `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+      // Circumference = 2 * PI * 88 = 552.92
+      const totalCircumference = 552.92;
+      const progressFraction = (60 - timeLeft) / 60;
+      const offset = totalCircumference * (1 - progressFraction);
+      const circle = document.getElementById('timerCircle');
+      circle.style.strokeDashoffset = offset;
+
+      if (timeLeft <= 10) {
+        circle.classList.add('danger');
+        circle.classList.remove('warning');
+      } else if (timeLeft <= 30) {
+        circle.classList.add('warning');
+        circle.classList.remove('danger');
+      } else {
+        circle.classList.remove('warning', 'danger');
+      }
+    }
+
+    function startTimer() {
+      if (timerRunning) return;
+      timerRunning = true;
+      if (window.confAudio) confAudio.playStart();
+
+      document.getElementById('startTimerBtn').classList.add('hidden');
+      document.getElementById('pauseTimerBtn').classList.remove('hidden');
+      document.getElementById('audioWaveBox').classList.add('speaking-active');
+      document.getElementById('practiceCompletedBanner').classList.add('hidden');
+
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+
+        if (timeLeft === 30 && window.confAudio) {
+          confAudio.playTone(600, 'sine', 0.15, 0.15);
+        } else if (timeLeft === 10 && window.confAudio) {
+          confAudio.playWarning();
+        }
+
+        if (timeLeft <= 0) {
+          finishTimer();
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      if (!timerRunning) return;
+      clearInterval(timerInterval);
+      timerRunning = false;
+      document.getElementById('startTimerBtn').classList.remove('hidden');
+      document.getElementById('startTimerBtn').innerText = 'Lanjutkan';
+      document.getElementById('pauseTimerBtn').classList.add('hidden');
+      document.getElementById('audioWaveBox').classList.remove('speaking-active');
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      timerRunning = false;
+      timeLeft = 60;
+      document.getElementById('startTimerBtn').classList.remove('hidden');
+      document.getElementById('startTimerBtn').innerText = 'Start Timer';
+      document.getElementById('pauseTimerBtn').classList.add('hidden');
+      document.getElementById('audioWaveBox').classList.remove('speaking-active');
+      document.getElementById('practiceCompletedBanner').classList.add('hidden');
+      updateTimerDisplay();
+    }
+
+    function finishTimer() {
+      clearInterval(timerInterval);
+      timerRunning = false;
+      if (window.confAudio) confAudio.playSuccess();
+
+      document.getElementById('startTimerBtn').classList.remove('hidden');
+      document.getElementById('startTimerBtn').innerText = 'Latihan Lagi';
+      document.getElementById('pauseTimerBtn').classList.add('hidden');
+      document.getElementById('audioWaveBox').classList.remove('speaking-active');
+      document.getElementById('practiceCompletedBanner').classList.remove('hidden');
+
+      // Save to database
+      const user = window.confApi ? window.confApi.getCurrentUser() : null;
+      const topic = topicsList[currentTopicIndex].title;
+      let scoreCount = 0;
+      document.querySelectorAll('.chk-item').forEach(c => { if (c.checked) scoreCount++; });
+
+      if (window.confApi) {
+        window.confApi.recordPracticeSession(user ? user.id : 'usr-guest', topic, '60 Detik', `${scoreCount}/6`, 0);
+      }
+
+      timeLeft = 60;
+      updateTimerDisplay();
+    }
+
+    function updateChecklistScore() {
+      let count = 0;
+      document.querySelectorAll('.chk-item').forEach(c => { if (c.checked) count++; });
+      document.getElementById('checklistScore').innerText = `${count} / 6`;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderActiveTopic();
+      updateTimerDisplay();
+
+      // Feature 2: Generate Topic button
+      document.getElementById('generateTopicBtn').addEventListener('click', () => {
+        currentTopicIndex = (currentTopicIndex + 1) % topicsList.length;
+        renderActiveTopic();
+        if (window.confAudio) confAudio.playClick();
+      });
+
+      // Timer Controls
+      document.getElementById('startTimerBtn').addEventListener('click', startTimer);
+      document.getElementById('pauseTimerBtn').addEventListener('click', pauseTimer);
+      document.getElementById('resetTimerBtn').addEventListener('click', resetTimer);
+
+      // Checklist events
+      document.querySelectorAll('.chk-item').forEach(chk => {
+        chk.addEventListener('change', updateChecklistScore);
+      });
+
+      document.getElementById('saveChecklistBtn').addEventListener('click', () => {
+        const user = window.confApi ? window.confApi.getCurrentUser() : null;
+        let count = 0;
+        document.querySelectorAll('.chk-item').forEach(c => { if (c.checked) count++; });
+        const topic = topicsList[currentTopicIndex].title;
+
+        if (window.confApi) {
+          window.confApi.recordPracticeSession(user ? user.id : 'usr-guest', topic, 'Checklist Evaluasi', `${count}/6`, 0);
+        }
+        alert(`Hasil evaluasi ${count}/6 tersimpan di database dashboard!`);
+      });
+    });
+  </script>
+</body>
+</html>

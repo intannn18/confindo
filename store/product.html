@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detail Produk — CONFindo Store Digital</title>
+  <link rel="icon" type="image/png" href="../assets/logo-icon.png">
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+          colors: {
+            brand: {
+              blue: '#0B5796',
+              blueDark: '#084375',
+              orange: '#E65C00',
+              orangeDark: '#CC5200'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Universal Navbar Placeholder -->
+  <div id="navbarContainer"></div>
+
+  <!-- Main Content -->
+  <main class="flex-grow pt-24 pb-20">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      
+      <!-- Breadcrumb -->
+      <div class="flex items-center gap-2 text-xs text-slate-400 font-semibold">
+        <a href="../store/index.html" class="hover:text-brand-blue">Store Digital</a>
+        <span>/</span>
+        <span id="breadcrumbCategory" class="text-slate-500">Kategori</span>
+        <span>/</span>
+        <span id="breadcrumbTitle" class="text-slate-800 font-bold truncate max-w-xs sm:max-w-md">Detail Produk</span>
+      </div>
+
+      <!-- Main Product Header Card -->
+      <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm grid grid-cols-1 md:grid-cols-12 gap-0">
+        
+        <!-- Left: Image Preview & Sneak Peek (Col 5) -->
+        <div class="md:col-span-5 bg-slate-900 relative flex flex-col justify-between p-6 overflow-hidden">
+          <div class="relative z-10">
+            <span id="detailBadge" class="inline-block text-xs font-bold bg-[#E65C00] text-white px-3.5 py-1 rounded-full shadow-sm mb-4">
+              Best Seller ⭐
+            </span>
+          </div>
+
+          <div class="relative z-10 aspect-[4/3] rounded-2xl overflow-hidden border border-slate-700/80 shadow-2xl my-auto">
+            <img id="detailImg" src="" alt="" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex items-end p-4">
+              <span class="text-xs text-white/90 font-medium flex items-center gap-1.5">
+                <span>📄</span>
+                <span>Dokumen PDF Asli Terverifikasi</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Sneak Peek Trigger Button -->
+          <div class="relative z-10 pt-4">
+            <button 
+              type="button" 
+              onclick="openSneakPeekModal()" 
+              class="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold border border-white/20 transition-all flex items-center justify-center gap-2"
+            >
+              <span>🔍 Lihat Cuplikan Isi PDF (Sneak Peek)</span>
+            </button>
+          </div>
+
+          <!-- Abstract background shape -->
+          <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+        </div>
+
+        <!-- Right: Info & Purchase Action (Col 7) -->
+        <div class="md:col-span-7 p-6 sm:p-10 space-y-6 flex flex-col justify-between">
+          <div class="space-y-4">
+            
+            <div class="flex items-center gap-2 text-xs text-amber-500 font-bold">
+              <span id="detailRating">★ 4.9</span>
+              <span id="detailReviewCount" class="text-slate-400 font-normal">• 380+ Ulasan Pembeli Terverifikasi</span>
+            </div>
+
+            <h1 id="detailTitle" class="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight">
+              Nama Produk
+            </h1>
+
+            <p id="detailSubtitle" class="text-sm font-semibold text-brand-blue">
+              Subjudul produk digital.
+            </p>
+
+            <p id="detailDesc" class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Deskripsi lengkap produk digital.
+            </p>
+
+            <!-- Book Author & ISBN Badge (if available) -->
+            <div id="authorIsbnContainer" class="hidden"></div>
+
+            <!-- PDF Specifications Badges -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 py-3 border-y border-slate-100 text-xs">
+              <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+                <span class="text-[10px] text-slate-400 block font-semibold">Format Dokumen</span>
+                <span id="specDocFormat" class="font-bold text-slate-800">PDF Digital Asli</span>
+              </div>
+              <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+                <span class="text-[10px] text-slate-400 block font-semibold">Halaman Lengkap</span>
+                <span id="specDocPages" class="font-bold text-slate-800">8 Halaman A4</span>
+              </div>
+              <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+                <span class="text-[10px] text-slate-400 block font-semibold">Pengiriman</span>
+                <span class="font-bold text-emerald-600">Instan Real-Time ⚡</span>
+              </div>
+            </div>
+
+            <!-- What's Included -->
+            <div class="space-y-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700">Apa Saja yang Anda Dapatkan:</h3>
+              <ul id="detailIncludes" class="space-y-2 text-xs text-slate-600">
+                <!-- Populated by script -->
+              </ul>
+            </div>
+
+          </div>
+
+          <!-- Price & Action Section -->
+          <div class="pt-6 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <span id="detailOriginalPrice" class="text-xs text-slate-400 line-through">Rp 30.000</span>
+                <span id="detailDiscountTag" class="text-[10px] font-extrabold bg-rose-50 text-rose-600 border border-rose-200 px-2 py-0.5 rounded">Diskon 50%</span>
+              </div>
+              <span id="detailPrice" class="text-3xl font-extrabold text-slate-900 block mt-0.5">Rp 15.000</span>
+              <span class="text-[11px] text-slate-400">Sekali bayar untuk lisensi seumur hidup</span>
+            </div>
+            
+            <a 
+              id="detailBuyBtn" 
+              href="#" 
+              class="px-8 py-4 rounded-xl bg-[#E65C00] hover:bg-[#CC5200] text-white font-bold text-sm shadow-md transition-all text-center flex items-center justify-center gap-2"
+            >
+              <span>Beli Sekarang (Scan QRIS)</span>
+              <span>→</span>
+            </a>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Detail Tab Sections (Table of Contents, Learning Outcomes, Audience, Reviews, FAQ) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Left: Deep Breakdown Content (Col 8) -->
+        <div class="lg:col-span-8 space-y-8">
+          
+          <!-- Section 1: Detailed Table of Contents (Silabus Materi) -->
+          <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-5">
+            <div class="pb-3 border-b border-slate-100 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] font-extrabold uppercase tracking-wider text-brand-blue bg-blue-50 px-2.5 py-0.5 rounded-full">
+                  Struktur Silabus PDF
+                </span>
+                <h2 class="text-lg font-bold text-slate-900 mt-1">Daftar Isi & Modul Pembahasan</h2>
+              </div>
+              <span id="tocBadgeCount" class="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">6 Modul</span>
+            </div>
+
+            <div id="detailTocList" class="space-y-3">
+              <!-- Populated by script -->
+            </div>
+          </div>
+
+          <!-- Section 2: What You Will Master (Learning Outcomes) -->
+          <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
+            <div class="pb-3 border-b border-slate-100">
+              <h2 class="text-lg font-bold text-slate-900">Apa yang Akan Anda Kuasai Setelah Membaca PDF Ini:</h2>
+              <p class="text-xs text-slate-500">Hasil praktis terukur yang dapat langsung Anda terapkan.</p>
+            </div>
+            <div id="detailOutcomesList" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <!-- Populated by script -->
+            </div>
+          </div>
+
+          <!-- Section 3: Target Audience (Cocok Untuk) -->
+          <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
+            <div class="pb-3 border-b border-slate-100">
+              <h2 class="text-lg font-bold text-slate-900">Siapa yang Paling Membutuhkan Panduan Ini?</h2>
+            </div>
+            <div id="detailAudienceList" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- Populated by script -->
+            </div>
+          </div>
+
+          <!-- Section 4: Customer Reviews & Testimonials -->
+          <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-5">
+            <div class="pb-3 border-b border-slate-100 flex items-center justify-between">
+              <div>
+                <h2 class="text-lg font-bold text-slate-900">Ulasan Rekan Pembelajar Mandiri</h2>
+                <p class="text-xs text-slate-500">Pengalaman nyata dari pembeli yang telah mempraktikkan materi.</p>
+              </div>
+              <div class="flex items-center gap-1 text-sm font-bold text-amber-500">
+                <span>★ 4.9</span>
+                <span class="text-xs text-slate-400 font-normal">/ 5.0</span>
+              </div>
+            </div>
+
+            <div id="detailReviewsList" class="space-y-4">
+              <!-- Populated by script -->
+            </div>
+          </div>
+
+          <!-- Section 5: FAQ Accordion -->
+          <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
+            <div class="pb-3 border-b border-slate-100">
+              <h2 class="text-lg font-bold text-slate-900">Pertanyaan yang Sering Diajukan (FAQ)</h2>
+            </div>
+            <div id="detailFaqList" class="space-y-3">
+              <!-- Populated by script -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right: Sticky Value & Delivery Card (Col 4) -->
+        <div class="lg:col-span-4 sticky top-28 space-y-4">
+          
+          <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-5">
+            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <span>⚡</span>
+              <span>Jaminan Pengiriman Real-Time</span>
+            </h3>
+
+            <div class="space-y-3 text-xs text-slate-600">
+              <div class="flex items-start gap-3">
+                <div class="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 font-bold flex items-center justify-center shrink-0">1</div>
+                <div>
+                  <strong class="text-slate-800 block">Pembayaran Instan via QRIS Resmi</strong>
+                  <span>Cukup scan QRIS menggunakan m-Banking atau E-Wallet apa pun tanpa ribet.</span>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <div class="w-6 h-6 rounded-lg bg-blue-50 text-brand-blue font-bold flex items-center justify-center shrink-0">2</div>
+                <div>
+                  <strong class="text-slate-800 block">Akses Berkas Otomatis Aktif</strong>
+                  <span>Tombol "Buka PDF" & "Download" langsung terbuka seketika setelah scan.</span>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <div class="w-6 h-6 rounded-lg bg-orange-50 text-brand-orange font-bold flex items-center justify-center shrink-0">3</div>
+                <div>
+                  <strong class="text-slate-800 block">Tersimpan Selamanya di Dashboard</strong>
+                  <span>Dapat dibaca ulang dan diunduh kapan saja tanpa batas kuota.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-slate-100">
+              <a 
+                id="stickyBuyBtn" 
+                href="#" 
+                class="block w-full py-3.5 rounded-xl bg-[#E65C00] hover:bg-[#CC5200] text-white font-bold text-xs text-center shadow-md transition-all"
+              >
+                Beli Sekarang (Rp 15.000)
+              </a>
+              <span class="text-[11px] text-slate-400 text-center block mt-2">🔒 Transaksi Aman & Terenkripsi</span>
+            </div>
+          </div>
+
+          <!-- Free Sample Notice -->
+          <div class="p-5 rounded-3xl bg-blue-50/70 border border-blue-200 text-xs text-blue-900 space-y-2">
+            <span class="font-bold block">💡 Mau Coba Latihan Gratis Dulu?</span>
+            <p class="text-blue-800 text-[11px]">
+              Gunakan studio latihan 1-menit dan video tutorial terarah secara bebas tanpa biaya sebelum membeli panduan PDF mendalam ini.
+            </p>
+            <a href="../practice/index.html" class="inline-block text-[11px] font-bold text-brand-blue hover:underline">
+              Coba Studio Latihan 1-Menit →
+            </a>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Sneak Peek Preview Modal -->
+  <div id="sneakPeekModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 modal-backdrop">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-2xl w-full shadow-2xl modal-content-box border border-slate-200 space-y-5 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div>
+          <span class="text-[10px] font-bold text-brand-orange uppercase bg-orange-50 px-2.5 py-0.5 rounded-full">Sample Preview</span>
+          <h3 class="text-lg font-bold text-slate-900 mt-1">Cuplikan Isi Berkas PDF</h3>
+        </div>
+        <button type="button" onclick="closeSneakPeekModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center font-bold">
+          ✕
+        </button>
+      </div>
+
+      <div id="sneakPeekContentList" class="space-y-4 text-xs text-slate-700">
+        <!-- Rendered dynamically by script -->
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-4">
+        <span id="sneakPeekFootnote" class="text-xs text-slate-500">Dapatkan versi lengkap dokumen segera setelah pembayaran.</span>
+        <a id="modalBuyActionBtn" href="#" class="px-6 py-2.5 bg-[#E65C00] hover:bg-[#CC5200] text-white text-xs font-bold rounded-xl whitespace-nowrap shadow-sm">
+          Beli Sekarang
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Universal Footer Placeholder -->
+  <div id="footerContainer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/data.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/navbar.js"></script>
+  <script>
+    let currentProd = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check authentication: Store product detail requires login!
+      const user = window.confApi ? window.confApi.getCurrentUser() : null;
+      if (!user) {
+        window.showLoginRequiredModal('store', '../', 'Login untuk Membuka Detail Produk', 'Silakan masuk atau daftar akun terlebih dahulu untuk melihat spesifikasi lengkap dan membeli produk digital CONFindo.');
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      const prodId = params.get('id') || 'prod-buku-ajar-public-speaking';
+
+      currentProd = window.confApi ? window.confApi.getProductById(prodId) : null;
+      if (!currentProd) {
+        alert('Produk tidak ditemukan!');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      document.title = `${currentProd.name} (PDF) — CONFindo Store`;
+      document.getElementById('breadcrumbCategory').innerText = currentProd.category || 'Toolkit';
+      document.getElementById('breadcrumbTitle').innerText = currentProd.name;
+      document.getElementById('detailTitle').innerText = currentProd.name;
+      document.getElementById('detailSubtitle').innerText = currentProd.subtitle || currentProd.name;
+      const imgUrl = window.confApi && window.confApi.getProductImageUrl ? window.confApi.getProductImageUrl(currentProd, true) : (currentProd.image.startsWith('http') ? currentProd.image : '../' + currentProd.image.replace(/^\.\.\//, ''));
+      document.getElementById('detailImg').src = imgUrl;
+      document.getElementById('detailDesc').innerText = currentProd.description;
+
+      // Author & ISBN Info Box (For Academic Books like Buku Ajar)
+      const authorBox = document.getElementById('authorIsbnContainer');
+      if (authorBox && currentProd.author) {
+        authorBox.classList.remove('hidden');
+        authorBox.innerHTML = `
+          <div class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50/60 rounded-2xl border border-blue-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+            <div>
+              <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Penulis Buku Ajar</span>
+              <span class="font-extrabold text-brand-blue text-sm block">${currentProd.author}</span>
+              ${currentProd.publisher ? `<span class="text-[11px] text-slate-500 mt-0.5 block">Penerbit: <strong>${currentProd.publisher}</strong></span>` : ''}
+            </div>
+            ${currentProd.isbn ? `
+              <div class="sm:text-right bg-white sm:bg-transparent p-2 sm:p-0 rounded-xl border sm:border-0 border-blue-100">
+                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Nomor ISBN Resmi</span>
+                <span class="font-mono font-extrabold text-slate-800 text-xs bg-white px-2.5 py-1 rounded-md border border-slate-200 inline-block mt-0.5">${currentProd.isbn}</span>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }
+      document.getElementById('detailBadge').innerText = currentProd.badge || 'Digital Kit ⭐';
+      document.getElementById('detailRating').innerText = `★ ${currentProd.rating || 4.9}`;
+      document.getElementById('detailReviewCount').innerText = `• ${currentProd.reviewCount || 250}+ Ulasan Pembeli Terverifikasi`;
+
+      document.getElementById('detailPrice').innerText = `Rp ${Number(currentProd.price).toLocaleString('id-ID')}`;
+      if (currentProd.original_price) {
+        document.getElementById('detailOriginalPrice').innerText = `Rp ${Number(currentProd.original_price).toLocaleString('id-ID')}`;
+        const pct = Math.round(((currentProd.original_price - currentProd.price) / currentProd.original_price) * 100);
+        document.getElementById('detailDiscountTag').innerText = `Hemat ${pct}%`;
+      } else {
+        document.getElementById('detailOriginalPrice').classList.add('hidden');
+        document.getElementById('detailDiscountTag').classList.add('hidden');
+      }
+
+      document.getElementById('specDocFormat').innerText = currentProd.format || 'PDF Digital Asli';
+      document.getElementById('specDocPages').innerText = currentProd.pages_count || '8 Halaman Lengkap';
+
+      // Includes List
+      const includesList = document.getElementById('detailIncludes');
+      includesList.innerHTML = (currentProd.includes || []).map(item => `
+        <li class="flex items-start gap-2">
+          <span class="text-emerald-500 font-bold">✓</span>
+          <span>${item}</span>
+        </li>
+      `).join('') || '<li>Dokumen PDF lengkap siap akses instan.</li>';
+
+      // Table of Contents List
+      const tocList = document.getElementById('detailTocList');
+      const tocs = currentProd.table_of_contents || [];
+      document.getElementById('tocBadgeCount').innerText = `${tocs.length} Modul`;
+      tocList.innerHTML = tocs.map((t, idx) => `
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-start justify-between gap-4">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] font-bold text-white bg-brand-blue px-2 py-0.5 rounded">
+                ${t.mod || `Modul 0${idx + 1}`}
+              </span>
+              <h4 class="text-xs font-bold text-slate-900">${t.title}</h4>
+            </div>
+            <p class="text-xs text-slate-500 leading-relaxed">${t.desc}</p>
+          </div>
+          <span class="text-[11px] font-bold text-brand-blue shrink-0 pt-0.5">Hal 0${idx + 2}</span>
+        </div>
+      `).join('');
+
+      // Learning Outcomes
+      const outcomesList = document.getElementById('detailOutcomesList');
+      const outcomes = currentProd.learning_outcomes || [
+        'Menguasai teknik public speaking mandiri secara terstruktur.',
+        'Mengendalikan rasa gugup dan detak jantung sebelum berbicara.',
+        'Meningkatkan kepercayaan diri alami tanpa perlu menghafal naskah kaku.'
+      ];
+      outcomesList.innerHTML = outcomes.map(o => `
+        <div class="p-4 rounded-2xl bg-emerald-50/50 border border-emerald-100 flex items-start gap-2.5">
+          <span class="text-emerald-600 font-bold text-sm">✓</span>
+          <span class="text-xs text-slate-700 font-medium leading-relaxed">${o}</span>
+        </div>
+      `).join('');
+
+      // Target Audience
+      const audienceList = document.getElementById('detailAudienceList');
+      const audiences = currentProd.target_audience || [
+        { role: 'Mahasiswa & Pelajar', reason: 'Presentasi tugas, seminar proposal, dan sidang skripsi.' },
+        { role: 'Fresh Graduate & Karyawan', reason: 'Wawancara kerja dan meeting profesional di kantor.' }
+      ];
+      audienceList.innerHTML = audiences.map(a => `
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
+          <span class="text-xs font-bold text-brand-blue block">👤 ${a.role}</span>
+          <p class="text-[11px] text-slate-600 leading-relaxed">${a.reason}</p>
+        </div>
+      `).join('');
+
+      // Reviews List
+      const reviewsList = document.getElementById('detailReviewsList');
+      const reviews = currentProd.reviews_list || [
+        { name: 'Alifia Zahra', role: 'Mahasiswi UI', rating: 5, date: '3 hari lalu', comment: 'Membantu banget pas ujian skripsi kemarin! Worth it banget sekali beli untuk seumur hidup.' },
+        { name: 'Rian Hendrawan', role: 'Karyawan Swasta', rating: 5, date: '1 minggu lalu', comment: 'PDF-nya rapi, jelas, dan langsung bisa saya buka setelah scan bayar via QRIS.' }
+      ];
+      reviewsList.innerHTML = reviews.map(r => `
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="text-xs font-bold text-slate-900 block">${r.name}</span>
+              <span class="text-[10px] text-slate-400 font-medium">${r.role} • <span class="text-emerald-600 font-bold">✓ Pembeli Terverifikasi</span></span>
+            </div>
+            <div class="text-xs text-amber-500 font-bold">
+              ${'★'.repeat(r.rating || 5)}
+            </div>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed italic">"${r.comment}"</p>
+        </div>
+      `).join('');
+
+      // FAQ List
+      const faqList = document.getElementById('detailFaqList');
+      const faqs = currentProd.faq || [
+        { q: 'Kapan saya bisa mengakses file PDF ini?', a: 'Detik itu juga setelah pembayaran berhasil! Akses aktif secara real-time.' },
+        { q: 'Apakah file PDF bisa dicetak?', a: 'Bisa! Format PDF resolusi tinggi siap dicetak di kertas A4.' }
+      ];
+      faqList.innerHTML = faqs.map(f => `
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/70 space-y-1.5">
+          <h4 class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+            <span class="text-brand-orange">Q:</span>
+            <span>${f.q}</span>
+          </h4>
+          <p class="text-xs text-slate-600 leading-relaxed pl-4">${f.a}</p>
+        </div>
+      `).join('');
+
+      // Check Ownership & Buy Button Actions
+      const user = window.confApi ? window.confApi.getCurrentUser() : null;
+      const isOwned = user ? window.confApi.userOwnsProduct(user.id, currentProd.id) : false;
+      const buyBtn = document.getElementById('detailBuyBtn');
+      const stickyBuyBtn = document.getElementById('stickyBuyBtn');
+      const modalBuyBtn = document.getElementById('modalBuyActionBtn');
+
+      if (isOwned) {
+        buyBtn.innerHTML = '<span>✓ Buka & Baca PDF Sekarang</span> <span>→</span>';
+        buyBtn.href = `viewer.html?id=${currentProd.id}`;
+        buyBtn.className = 'px-8 py-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition-all text-center flex items-center justify-center gap-2';
+
+        stickyBuyBtn.innerText = '✓ Buka PDF di Online Reader';
+        stickyBuyBtn.href = `viewer.html?id=${currentProd.id}`;
+        stickyBuyBtn.className = 'block w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs text-center shadow-md transition-all';
+
+        modalBuyBtn.innerText = 'Buka PDF Sekarang';
+        modalBuyBtn.href = `viewer.html?id=${currentProd.id}`;
+      } else {
+        const checkoutUrl = `../checkout/index.html?id=${currentProd.id}`;
+        buyBtn.href = checkoutUrl;
+        stickyBuyBtn.href = checkoutUrl;
+        modalBuyBtn.href = checkoutUrl;
+      }
+    });
+
+    function openSneakPeekModal() {
+      const sneakContainer = document.getElementById('sneakPeekContentList');
+      if (sneakContainer && currentProd) {
+        if (currentProd.id === 'prod-buku-ajar-public-speaking') {
+          sneakContainer.innerHTML = `
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-bold text-white bg-brand-blue px-2 py-0.5 rounded">Halaman Sampel: Bab I</span>
+                <span class="text-xs font-bold text-slate-800">Definisi & Esensi Public Speaking</span>
+              </div>
+              <p class="leading-relaxed italic">
+                "Public speaking, atau berbicara di depan umum, adalah suatu bentuk komunikasi lisan di mana seseorang menyampaikan pesan atau informasi kepada audiens yang hadir... Komunikasi ini bukan hanya tentang apa yang dikatakan, tetapi juga bagaimana pesan tersebut disampaikan secara keseluruhan."
+              </p>
+            </div>
+            <div class="p-4 bg-blue-50/50 rounded-2xl border border-blue-100 space-y-2">
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-bold text-white bg-[#E65C00] px-2 py-0.5 rounded">Halaman Sampel: Bab X</span>
+                <span class="text-xs font-bold text-slate-800">Berbicara dengan Kepercayaan Diri & Mindfulness</span>
+              </div>
+              <p class="leading-relaxed italic">
+                "Mindfulness, atau kesadaran diri, adalah strategi yang sangat efektif dalam mengelola kekhawatiran. Dengan mengarahkan perhatian pada momen sekarang, pembicara dapat meredakan tekanan, meningkatkan konsentrasi, dan menciptakan keterlibatan yang lebih mendalam dengan audiens..."
+              </p>
+            </div>
+            <div class="p-4 bg-amber-50/50 rounded-2xl border border-amber-100 space-y-2">
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-bold text-amber-900 bg-amber-200 px-2 py-0.5 rounded">Legalitas & Identitas Buku</span>
+                <span class="text-xs font-bold text-slate-800">PT Media Penerbit Indonesia (IKAPI)</span>
+              </div>
+              <p class="leading-relaxed">
+                ISBN: <strong>978-623-8649-02-0</strong> • Cetakan I, Juni 2024 • Penulis: Yerly A. Datu, S.Pd., M.Pd. • Total 217 Halaman Lengkap (14 Bab, Latihan Soal, Glosarium, Indeks).
+              </p>
+            </div>
+          `;
+          document.getElementById('sneakPeekFootnote').innerText = 'Dapatkan versi PDF lengkap 217 halaman resmi seharga Rp 15.000 saja!';
+        } else {
+          sneakContainer.innerHTML = (currentProd.table_of_contents || []).slice(0, 3).map((item, i) => `
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+              <strong class="text-brand-blue block text-sm">${item.mod || `Modul 0${i+1}`}: ${item.title}</strong>
+              <p class="leading-relaxed">${item.desc}</p>
+            </div>
+          `).join('');
+          document.getElementById('sneakPeekFootnote').innerText = `Dapatkan versi lengkap ${currentProd.pages_count || 'dokumen'} segera setelah pembayaran.`;
+        }
+      }
+      document.getElementById('sneakPeekModal').classList.remove('hidden');
+    }
+
+    function closeSneakPeekModal() {
+      document.getElementById('sneakPeekModal').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>

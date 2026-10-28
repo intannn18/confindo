@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CONFindo Store Digital — Tools Digital & Koleksi PDF</title>
+  <meta name="description" content="Toko produk Store Digital resmi CONFindo: Buku ajar public speaking PDF, master template slide, naskah pidato, dan interview workbook dengan pembayaran instan via QRIS.">
+  <link rel="icon" type="image/png" href="../assets/logo-icon.png">
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+          colors: {
+            brand: {
+              blue: '#0B5796',
+              blueDark: '#084375',
+              orange: '#E65C00',
+              orangeDark: '#CC5200'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Universal Navbar Placeholder -->
+  <div id="navbarContainer"></div>
+
+  <!-- Main Content -->
+  <main class="flex-grow pt-24 pb-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+      
+      <!-- Page Header -->
+      <div class="text-center max-w-3xl mx-auto space-y-3">
+        <span class="text-xs font-extrabold uppercase tracking-wider text-brand-orange bg-orange-50 px-3.5 py-1 rounded-full border border-orange-100">
+          Store Digital & Produk CONFindo
+        </span>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+          “Koleksi Produk Store Digital untuk Berbicara Lebih Percaya Diri.”
+        </h1>
+        <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+          Buku ajar dan panduan praktis berformat <strong>PDF Asli Resolusi Tinggi</strong>. Cukup scan QRIS resmi, berkas langsung aktif dan terunduh otomatis seumur hidup.
+        </p>
+
+        <!-- Real-Time Delivery Notice Pill -->
+        <div class="inline-flex items-center gap-2 p-2 px-4 rounded-full bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 font-semibold mt-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+          <span>⚡ Pembayaran Cepat via QRIS: Akses Online Reader & Download PDF Asli Seketika!</span>
+        </div>
+      </div>
+
+      <!-- Filters & Category Navigation -->
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-200 pb-4">
+        <!-- Filter Pills -->
+        <div class="flex items-center gap-2 overflow-x-auto w-full sm:w-auto pb-2 sm:pb-0 text-xs font-bold">
+          <button type="button" onclick="filterCategory('all')" class="cat-pill active px-4 py-2 rounded-xl bg-[#0B5796] text-white whitespace-nowrap shadow-sm">
+            Semua Produk Digital
+          </button>
+          <button type="button" onclick="filterCategory('guide')" class="cat-pill px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 whitespace-nowrap">
+            Buku & Panduan
+          </button>
+          <button type="button" onclick="filterCategory('slide')" class="cat-pill px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 whitespace-nowrap">
+            Slide Template
+          </button>
+          <button type="button" onclick="filterCategory('script')" class="cat-pill px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 whitespace-nowrap">
+            Script & Interview
+          </button>
+          <button type="button" onclick="filterCategory('journal')" class="cat-pill px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 whitespace-nowrap">
+            Journal & Checklist
+          </button>
+          <a href="../review/index.html" class="cat-pill px-4 py-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 hover:bg-amber-100 whitespace-nowrap flex items-center gap-1.5 transition-all shadow-2xs">
+            <span>⭐ Review Pembeli</span>
+            <span class="text-[10px] font-extrabold bg-amber-200 text-amber-900 px-1.5 py-0.5 rounded">4.9 / 5.0</span>
+          </a>
+        </div>
+
+        <!-- Product Count badge -->
+        <div class="text-xs text-slate-500 font-semibold whitespace-nowrap self-end sm:self-auto">
+          Menampilkan <span id="productCount" class="font-bold text-slate-900">6</span> Produk Store Digital
+        </div>
+      </div>
+
+      <!-- Products Grid -->
+      <div id="storeGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Rendered by JavaScript -->
+      </div>
+
+      <!-- Featured Customer Reviews Section in Store -->
+      <div class="mt-16 pt-10 border-t border-slate-200/80 space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <span class="text-xs font-extrabold uppercase tracking-wider text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+              ⭐ 4.9 / 5.0 dari 350+ Ulasan
+            </span>
+            <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-2">Apa Kata Mereka Tentang Produk Store Digital CONFindo?</h2>
+            <p class="text-xs text-slate-500">Pengalaman nyata dari pembeli yang telah membuktikan hasil latihan mandiri.</p>
+          </div>
+          <a href="../review/index.html" class="px-5 py-2.5 rounded-xl bg-[#0B5796] hover:bg-[#084375] text-white text-xs font-bold transition-all shadow-sm flex items-center gap-2 self-start sm:self-auto">
+            <span>Lihat Semua Review Pembeli</span>
+            <span>→</span>
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <strong class="text-xs font-bold text-slate-900 block">Alifia Zahra</strong>
+                <span class="text-[10px] text-slate-400">Mahasiswi UI • <span class="text-emerald-600 font-bold">✓ Terverifikasi</span></span>
+              </div>
+              <span class="text-amber-500 text-xs font-bold">★★★★★</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed italic">
+              "Formula 3-Minute Calm di buku ajar beneran manjur pas sidang sempro kemarin! Biasanya suara saya bergetar parah, sekarang jadi jauh lebih tenang. Worth it banget!"
+            </p>
+            <span class="text-[10px] font-semibold text-brand-blue bg-blue-50 px-2 py-0.5 rounded-md inline-block">Buku Ajar Public Speaking (PDF)</span>
+          </div>
+
+          <div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <strong class="text-xs font-bold text-slate-900 block">Sarah Amanda</strong>
+                <span class="text-[10px] text-slate-400">Fresh Graduate • <span class="text-emerald-600 font-bold">✓ Terverifikasi</span></span>
+              </div>
+              <span class="text-amber-500 text-xs font-bold">★★★★★</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed italic">
+              "Alhamdulillah lolos offer MT di unicorn berkat rumus STAR di PDF ini! Pertanyaan kelemahan diri yang dibahas bener-bener keluar pas user interview."
+            </p>
+            <span class="text-[10px] font-semibold text-brand-blue bg-blue-50 px-2 py-0.5 rounded-md inline-block">Interview Prep Kit STAR (PDF)</span>
+          </div>
+
+          <div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <strong class="text-xs font-bold text-slate-900 block">Rian Hendrawan</strong>
+                <span class="text-[10px] text-slate-400">Management Trainee • <span class="text-emerald-600 font-bold">✓ Terverifikasi</span></span>
+              </div>
+              <span class="text-amber-500 text-xs font-bold">★★★★★</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed italic">
+              "Hook pembukanya aplikatif banget untuk meeting mingguan di kantor. Boss saya sampai notice presentasi saya jauh lebih terstruktur dan to the point."
+            </p>
+            <span class="text-[10px] font-semibold text-brand-blue bg-blue-50 px-2 py-0.5 rounded-md inline-block">Speech Script Bundle (PDF)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trust Badges with Live PDF Highlights -->
+      <div class="mt-12 pt-8 border-t border-slate-200/80 grid grid-cols-1 sm:grid-cols-3 gap-6 text-center text-xs text-slate-600">
+        <div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-1">
+          <span class="text-2xl block mb-1">📲</span>
+          <span class="font-bold text-slate-900 block text-sm">Pembayaran Instan via QRIS Resmi</span>
+          <p class="text-slate-500 text-[11px]">Cukup scan QRIS menggunakan aplikasi m-Banking atau E-Wallet apa pun. Berkas otomatis aktif seketika.</p>
+        </div>
+        <div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-1">
+          <span class="text-2xl block mb-1">📄</span>
+          <span class="font-bold text-slate-900 block text-sm">Berkas PDF Asli & Siap Cetak</span>
+          <p class="text-slate-500 text-[11px]">Bukan link dummy! File PDF vektor resolusi tinggi dapat disimpan di HP/laptop atau dicetak.</p>
+        </div>
+        <div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-1">
+          <span class="text-2xl block mb-1">♾️</span>
+          <span class="font-bold text-slate-900 block text-sm">Lifetime License & Updates</span>
+          <p class="text-slate-500 text-[11px]">Hak akses personal seumur hidup. Bebas unduh ulang tanpa batasan waktu di tab Dashboard.</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Universal Footer Placeholder -->
+  <div id="footerContainer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/data.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/navbar.js"></script>
+  <script>
+    let activeFilter = 'all';
+
+    function renderStoreProducts() {
+      const container = document.getElementById('storeGrid');
+      if (!container || !window.confApi) return;
+
+      const user = window.confApi.getCurrentUser();
+      let products = window.confApi.getProducts();
+
+      // Filter category
+      if (activeFilter === 'guide') {
+        products = products.filter(p => p.category.toLowerCase().includes('e-book') || p.category.toLowerCase().includes('guide') || p.category.toLowerCase().includes('buku') || p.category.toLowerCase().includes('panduan'));
+      } else if (activeFilter === 'slide') {
+        products = products.filter(p => p.category.toLowerCase().includes('slide') || p.category.toLowerCase().includes('template'));
+      } else if (activeFilter === 'script') {
+        products = products.filter(p => p.category.toLowerCase().includes('script') || p.category.toLowerCase().includes('career') || p.category.toLowerCase().includes('interview'));
+      } else if (activeFilter === 'journal') {
+        products = products.filter(p => p.category.toLowerCase().includes('journal') || p.category.toLowerCase().includes('checklist'));
+      }
+
+      document.getElementById('productCount').innerText = products.length;
+
+      container.innerHTML = products.map(prod => {
+        const isOwned = user ? window.confApi.userOwnsProduct(user.id, prod.id) : false;
+        const discountPct = prod.original_price ? Math.round(((prod.original_price - prod.price) / prod.original_price) * 100) : null;
+        const topIncludes = (prod.includes || []).slice(0, 3);
+        const imgUrl = window.confApi && window.confApi.getProductImageUrl ? window.confApi.getProductImageUrl(prod, true) : (prod.image.startsWith('http') ? prod.image : '../' + prod.image.replace(/^\.\.\//, ''));
+
+        return `
+          <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm card-hover flex flex-col justify-between group">
+            <div>
+              <!-- Thumbnail Banner -->
+              <div class="aspect-[16/10] bg-slate-900 relative overflow-hidden">
+                <img src="${imgUrl}" alt="${prod.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-95">
+                
+                <!-- Badge Best Seller / Popular -->
+                <span class="absolute top-3.5 left-3.5 text-xs font-bold bg-[#E65C00] text-white px-3 py-1 rounded-full shadow-sm">
+                  ${prod.badge || 'Digital PDF'}
+                </span>
+
+                <!-- Format Pill -->
+                <span class="absolute top-3.5 right-3.5 text-[11px] font-bold bg-white/95 text-brand-blue px-2.5 py-0.5 rounded-full shadow-sm backdrop-blur-sm flex items-center gap-1">
+                  <span>📄</span>
+                  <span>PDF Asli</span>
+                </span>
+
+                <!-- Discount Tag -->
+                ${discountPct ? `
+                  <span class="absolute bottom-3 right-3 text-[11px] font-extrabold bg-rose-600 text-white px-2 py-0.5 rounded-md shadow-sm">
+                    Hemat ${discountPct}%
+                  </span>
+                ` : ''}
+
+                <!-- Category -->
+                <span class="absolute bottom-3 left-3 text-[10px] font-bold bg-slate-900/80 text-slate-200 px-2.5 py-0.5 rounded-md backdrop-blur-sm">
+                  ${prod.category || 'PDF Toolkit'}
+                </span>
+              </div>
+
+              <!-- Content Body -->
+              <div class="p-6">
+                <div class="flex items-center justify-between text-xs text-amber-500 font-semibold mb-2">
+                  <div class="flex items-center gap-1">
+                    <span>★ ${prod.rating || 4.9}</span>
+                    <span class="text-slate-400 font-normal">(${prod.reviewCount || 200}+ ulasan)</span>
+                  </div>
+                  <span class="text-[11px] text-slate-400 font-medium">${prod.pages_count || '8 Halaman PDF'}</span>
+                </div>
+
+                <h3 class="text-lg font-extrabold text-slate-900 group-hover:text-brand-blue transition-colors mb-1.5 leading-snug">
+                  ${prod.name}
+                </h3>
+
+                <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed mb-4">
+                  ${prod.subtitle || prod.description}
+                </p>
+
+                <!-- What's Inside Snippet -->
+                <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100 text-[11px] text-slate-600 space-y-1.5 mb-2">
+                  <span class="font-bold text-slate-800 block text-[10px] uppercase tracking-wider">Isi Berkas PDF:</span>
+                  ${topIncludes.map(item => `
+                    <div class="flex items-start gap-1.5 line-clamp-1">
+                      <span class="text-emerald-500 font-bold">✓</span>
+                      <span class="truncate">${item}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+
+            <!-- Price & Actions Footer -->
+            <div class="p-6 pt-0 border-t border-slate-100 pt-4 flex items-center justify-between gap-3">
+              <div>
+                ${prod.original_price ? `<span class="text-[11px] text-slate-400 line-through block">Rp ${Number(prod.original_price).toLocaleString('id-ID')}</span>` : ''}
+                <span class="text-lg font-extrabold text-slate-900">Rp ${Number(prod.price).toLocaleString('id-ID')}</span>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <a 
+                  href="product.html?id=${prod.id}" 
+                  class="px-3.5 py-2 rounded-xl text-xs font-semibold border border-slate-200 hover:border-slate-300 text-slate-700 hover:bg-slate-50 transition-all text-center"
+                >
+                  Detail
+                </a>
+                <a 
+                  href="${isOwned ? `viewer.html?id=${prod.id}` : `../checkout/index.html?id=${prod.id}`}" 
+                  class="px-4 py-2 rounded-xl text-xs font-bold transition-all text-center ${
+                    isOwned 
+                      ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm'
+                      : 'bg-[#E65C00] hover:bg-[#CC5200] text-white shadow-sm'
+                  }"
+                >
+                  ${isOwned ? '📖 Buka PDF' : 'Beli Sekarang'}
+                </a>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterCategory(cat) {
+      activeFilter = cat;
+      document.querySelectorAll('.cat-pill').forEach(btn => {
+        btn.className = 'cat-pill px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 whitespace-nowrap';
+      });
+      event.target.className = 'cat-pill active px-4 py-2 rounded-xl bg-[#0B5796] text-white whitespace-nowrap shadow-sm';
+      renderStoreProducts();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check authentication: Store page requires login!
+      const currentUser = window.confApi ? window.confApi.getCurrentUser() : null;
+      if (!currentUser) {
+        window.showLoginRequiredModal('store', '../', 'Login untuk Membuka Store Digital', 'Koleksi e-book PDF, master slide PowerPoint asli, dan toolkit persiapan interview memerlukan akun terdaftar untuk mengaktifkan lisensi resmi berkas digital Anda.');
+      }
+
+      renderStoreProducts();
+    });
+  </script>
+</body>
+</html>

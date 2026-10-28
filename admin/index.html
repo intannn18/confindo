@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — CONFindo</title>
+  <link rel="icon" type="image/png" href="../assets/logo-icon.png">
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+          colors: {
+            brand: {
+              blue: '#0B5796',
+              blueDark: '#084375',
+              orange: '#E65C00',
+              orangeDark: '#CC5200'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Universal Navbar Placeholder -->
+  <div id="navbarContainer"></div>
+
+  <!-- Main Content -->
+  <main class="flex-grow pt-24 pb-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Admin Header Bar -->
+      <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-xs font-extrabold uppercase tracking-wider bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-md">
+              Admin Control Panel
+            </span>
+            <span class="text-xs text-slate-400">• Full-Stack Mode</span>
+          </div>
+          <h1 class="text-2xl font-extrabold text-slate-900">
+            CONFindo Platform Administration
+          </h1>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <a href="../dashboard/index.html" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700">
+            Lihat Sebagai User
+          </a>
+          <button type="button" onclick="window.confApi.logout(); window.location.href='../login/index.html';" class="px-4 py-2 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-100 text-xs font-bold">
+            Logout Admin
+          </button>
+        </div>
+      </div>
+
+      <!-- Dashboard Statistics (Total Users, Products, Orders, Revenue) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Total Users</span>
+          <span id="statTotalUsers" class="text-3xl font-extrabold text-slate-900 block">0</span>
+          <span class="text-[11px] text-emerald-600 font-semibold mt-1 block">Aktif terdaftar</span>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Total Products</span>
+          <span id="statTotalProducts" class="text-3xl font-extrabold text-slate-900 block">0</span>
+          <span class="text-[11px] text-brand-orange font-semibold mt-1 block">Produk digital aktif</span>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Total Orders</span>
+          <span id="statTotalOrders" class="text-3xl font-extrabold text-slate-900 block">0</span>
+          <span class="text-[11px] text-brand-blue font-semibold mt-1 block">Transaksi tercatat</span>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Total Revenue</span>
+          <span id="statTotalRevenue" class="text-2xl font-extrabold text-emerald-600 block">Rp 0</span>
+          <span class="text-[11px] text-slate-400 font-semibold mt-1 block">Pendapatan berhasil</span>
+        </div>
+
+      </div>
+
+      <!-- Admin Navigation Tabs -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-2 mb-6 flex gap-2 text-xs font-bold overflow-x-auto">
+        <button type="button" onclick="switchAdminTab('tutorials')" class="admin-tab active px-4 py-2 rounded-xl bg-[#0B5796] text-white">Manage Tutorials</button>
+        <button type="button" onclick="switchAdminTab('products')" class="admin-tab px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100">Manage Products</button>
+        <button type="button" onclick="switchAdminTab('orders')" class="admin-tab px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100">Manage Orders</button>
+        <button type="button" onclick="switchAdminTab('users')" class="admin-tab px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100">Manage Users</button>
+      </div>
+
+      <!-- TAB 1: Manage Tutorials -->
+      <div id="adminTab_tutorials" class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900">Kelola Video Tutorial (YouTube)</h2>
+            <p class="text-xs text-slate-500">Tambah, perbarui, atau hapus materi pembelajaran.</p>
+          </div>
+          <button type="button" onclick="openAddTutorialModal()" class="px-4 py-2 bg-[#0B5796] text-white text-xs font-bold rounded-xl hover:bg-[#084375]">
+            + Add Tutorial
+          </button>
+        </div>
+
+        <div id="adminTutorialsTable" class="overflow-x-auto">
+          <!-- Populated by script -->
+        </div>
+      </div>
+
+      <!-- TAB 2: Manage Products -->
+      <div id="adminTab_products" class="hidden bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900">Kelola Produk Digital CONFindo Store</h2>
+            <p class="text-xs text-slate-500">Upload produk baru, atur harga, dan tautan unduhan.</p>
+          </div>
+          <button type="button" onclick="openAddProductModal()" class="px-4 py-2 bg-[#E65C00] text-white text-xs font-bold rounded-xl hover:bg-[#CC5200]">
+            + Add Product
+          </button>
+        </div>
+
+        <div id="adminProductsTable" class="overflow-x-auto">
+          <!-- Populated by script -->
+        </div>
+      </div>
+
+      <!-- TAB 3: Manage Orders -->
+      <div id="adminTab_orders" class="hidden bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+        <div class="pb-4 border-b border-slate-100">
+          <h2 class="text-lg font-bold text-slate-900">Daftar Transaksi & Order</h2>
+          <p class="text-xs text-slate-500">Pantau status pesanan dan pembayaran QRIS pelanggan.</p>
+        </div>
+        <div id="adminOrdersTable" class="overflow-x-auto">
+          <!-- Populated by script -->
+        </div>
+      </div>
+
+      <!-- TAB 4: Manage Users -->
+      <div id="adminTab_users" class="hidden bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+        <div class="pb-4 border-b border-slate-100">
+          <h2 class="text-lg font-bold text-slate-900">Daftar Pengguna Terdaftar</h2>
+        </div>
+        <div id="adminUsersTable" class="overflow-x-auto">
+          <!-- Populated by script -->
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Modal: Add / Edit Tutorial -->
+  <div id="tutEditModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 modal-backdrop">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl modal-content-box border border-slate-200 space-y-4">
+      <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+        <h3 id="tutModalTitle" class="text-base font-bold text-slate-900">Add Tutorial</h3>
+        <button type="button" onclick="closeTutModal()" class="text-slate-400">✕</button>
+      </div>
+
+      <form id="tutForm" onsubmit="saveTutorialForm(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="tutFormId">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Judul Tutorial</label>
+          <input type="text" id="tutFormTitle" required class="w-full p-2.5 rounded-xl border border-slate-200">
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Kategori</label>
+          <select id="tutFormCat" class="w-full p-2.5 rounded-xl border border-slate-200">
+            <option value="Public Speaking Basics">Public Speaking Basics</option>
+            <option value="Confidence">Confidence</option>
+            <option value="Presentation">Presentation</option>
+            <option value="Body Language">Body Language</option>
+            <option value="Voice & Intonation">Voice & Intonation</option>
+            <option value="Storytelling">Storytelling</option>
+            <option value="Interview">Interview</option>
+            <option value="Speech Preparation">Speech Preparation</option>
+            <option value="Handling Nervousness">Handling Nervousness</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">YouTube URL</label>
+          <input type="url" id="tutFormUrl" required placeholder="https://www.youtube.com/watch?v=..." class="w-full p-2.5 rounded-xl border border-slate-200">
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Thumbnail Image URL</label>
+          <input type="url" id="tutFormThumb" required placeholder="https://..." class="w-full p-2.5 rounded-xl border border-slate-200">
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Deskripsi Singkat</label>
+          <textarea id="tutFormDesc" rows="3" required class="w-full p-2.5 rounded-xl border border-slate-200"></textarea>
+        </div>
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeTutModal()" class="px-4 py-2 bg-slate-100 rounded-xl font-bold">Batal</button>
+          <button type="submit" class="px-5 py-2 bg-[#0B5796] text-white rounded-xl font-bold">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Universal Footer Placeholder -->
+  <div id="footerContainer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/data.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/navbar.js"></script>
+  <script>
+    function checkAdminAuth() {
+      const user = window.confApi ? window.confApi.getCurrentUser() : null;
+      if (!user || user.role !== 'admin') {
+        document.body.innerHTML = `
+          <div class="min-h-screen bg-slate-900 flex items-center justify-center p-6 text-center text-white">
+            <div class="max-w-md p-8 bg-slate-800 rounded-3xl border border-rose-500/30 space-y-4 shadow-2xl">
+              <div class="text-4xl">🚫</div>
+              <h2 class="text-xl font-bold text-rose-400">Akses Ditolak (403 Forbidden)</h2>
+              <p class="text-xs text-slate-300">Halaman ini terproteksi ketat dan hanya dapat diakses oleh Administrator resmi CONFindo.</p>
+              <div class="pt-2">
+                <a href="../login/index.html" class="inline-block px-5 py-2.5 rounded-xl bg-[#0B5796] hover:bg-[#084375] text-white font-bold text-xs">
+                  Menuju Halaman Login
+                </a>
+              </div>
+            </div>
+          </div>
+        `;
+        setTimeout(() => {
+          window.location.href = '../login/index.html';
+        }, 1500);
+        return false;
+      }
+      return true;
+    }
+
+    function initAdmin() {
+      if (!checkAdminAuth()) return;
+
+      const stats = window.confApi.getAdminStats();
+      document.getElementById('statTotalUsers').innerText = stats.totalUsers;
+      document.getElementById('statTotalProducts').innerText = stats.totalProducts;
+      document.getElementById('statTotalOrders').innerText = stats.totalOrders;
+      document.getElementById('statTotalRevenue').innerText = `Rp ${stats.totalRevenue.toLocaleString('id-ID')}`;
+
+      renderTutorialsTable();
+      renderProductsTable();
+      renderOrdersTable();
+      renderUsersTable();
+    }
+
+    // Tutorials Table
+    function renderTutorialsTable() {
+      const tuts = window.confApi.getTutorials();
+      const el = document.getElementById('adminTutorialsTable');
+      el.innerHTML = `
+        <table class="w-full text-left text-xs">
+          <thead>
+            <tr class="border-b border-slate-200 text-slate-400 uppercase text-[10px]">
+              <th class="pb-3">Judul</th>
+              <th class="pb-3">Kategori</th>
+              <th class="pb-3">Durasi</th>
+              <th class="pb-3 text-right">Aksi</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            ${tuts.map(t => `
+              <tr>
+                <td class="py-3 font-bold text-slate-900 max-w-xs truncate">${t.title}</td>
+                <td class="py-3 text-brand-blue">${t.category}</td>
+                <td class="py-3 text-slate-500">${t.duration || '10 Menit'}</td>
+                <td class="py-3 text-right space-x-2">
+                  <button type="button" onclick="editTutorial('${t.id}')" class="text-blue-600 hover:underline font-bold">Edit</button>
+                  <button type="button" onclick="deleteTutorial('${t.id}')" class="text-rose-500 hover:underline font-bold">Delete</button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    // Products Table
+    function renderProductsTable() {
+      const prods = window.confApi.getProducts();
+      const el = document.getElementById('adminProductsTable');
+      el.innerHTML = `
+        <table class="w-full text-left text-xs">
+          <thead>
+            <tr class="border-b border-slate-200 text-slate-400 uppercase text-[10px]">
+              <th class="pb-3">Nama Produk</th>
+              <th class="pb-3">Kategori</th>
+              <th class="pb-3">Harga</th>
+              <th class="pb-3 text-right">Aksi</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            ${prods.map(p => `
+              <tr>
+                <td class="py-3 font-bold text-slate-900">${p.name}</td>
+                <td class="py-3 text-slate-500">${p.category || 'Toolkit'}</td>
+                <td class="py-3 font-extrabold text-brand-orange">Rp ${Number(p.price).toLocaleString('id-ID')}</td>
+                <td class="py-3 text-right space-x-2">
+                  <a href="../store/product.html?id=${p.id}" class="text-blue-600 hover:underline font-bold">Lihat</a>
+                  <button type="button" onclick="deleteProduct('${p.id}')" class="text-rose-500 hover:underline font-bold">Delete</button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    // Orders Table
+    function renderOrdersTable() {
+      const orders = window.confApi.getAllOrders();
+      const el = document.getElementById('adminOrdersTable');
+      el.innerHTML = `
+        <table class="w-full text-left text-xs">
+          <thead>
+            <tr class="border-b border-slate-200 text-slate-400 uppercase text-[10px]">
+              <th class="pb-3">Order ID</th>
+              <th class="pb-3">User</th>
+              <th class="pb-3">Produk</th>
+              <th class="pb-3">Amount</th>
+              <th class="pb-3">Status</th>
+              <th class="pb-3">Tanggal</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            ${orders.map(o => `
+              <tr>
+                <td class="py-3 font-mono font-bold text-slate-800">${o.id}</td>
+                <td class="py-3 font-medium text-slate-700">${o.userName}</td>
+                <td class="py-3 text-slate-600">${o.productName}</td>
+                <td class="py-3 font-bold text-brand-orange">Rp ${Number(o.total).toLocaleString('id-ID')}</td>
+                <td class="py-3">
+                  <span class="px-2 py-0.5 rounded-full font-bold text-[10px] ${o.payment_status === 'paid' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                    ${o.payment_status.toUpperCase()}
+                  </span>
+                </td>
+                <td class="py-3 text-slate-400">${new Date(o.created_at).toLocaleDateString('id-ID')}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    // Users Table
+    function renderUsersTable() {
+      const users = window.confApi.getAdminUsers();
+      const el = document.getElementById('adminUsersTable');
+      el.innerHTML = `
+        <table class="w-full text-left text-xs">
+          <thead>
+            <tr class="border-b border-slate-200 text-slate-400 uppercase text-[10px]">
+              <th class="pb-3">Nama</th>
+              <th class="pb-3">Email</th>
+              <th class="pb-3">Role</th>
+              <th class="pb-3">Purchased Products</th>
+              <th class="pb-3">Tanggal Registrasi</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            ${users.map(u => `
+              <tr>
+                <td class="py-3 font-bold text-slate-900">${u.name}</td>
+                <td class="py-3 text-slate-600">${u.email}</td>
+                <td class="py-3 font-bold ${u.role === 'admin' ? 'text-amber-700' : 'text-blue-700'}">${u.role.toUpperCase()}</td>
+                <td class="py-3 font-bold text-emerald-600">${u.purchasesCount} item</td>
+                <td class="py-3 text-slate-400">${new Date(u.created_at).toLocaleDateString('id-ID')}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    // Modal Operations
+    function openAddTutorialModal() {
+      document.getElementById('tutModalTitle').innerText = 'Add Tutorial';
+      document.getElementById('tutFormId').value = '';
+      document.getElementById('tutFormTitle').value = '';
+      document.getElementById('tutFormUrl').value = '';
+      document.getElementById('tutFormThumb').value = 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=800&q=80';
+      document.getElementById('tutFormDesc').value = '';
+      document.getElementById('tutEditModal').classList.remove('hidden');
+    }
+
+    function editTutorial(id) {
+      const t = window.confApi.getTutorialById(id);
+      if (!t) return;
+      document.getElementById('tutModalTitle').innerText = 'Edit Tutorial';
+      document.getElementById('tutFormId').value = t.id;
+      document.getElementById('tutFormTitle').value = t.title;
+      document.getElementById('tutFormCat').value = t.category;
+      document.getElementById('tutFormUrl').value = t.youtube_url;
+      document.getElementById('tutFormThumb').value = t.thumbnail;
+      document.getElementById('tutFormDesc').value = t.description;
+      document.getElementById('tutEditModal').classList.remove('hidden');
+    }
+
+    function saveTutorialForm(e) {
+      e.preventDefault();
+      const id = document.getElementById('tutFormId').value;
+      const data = {
+        id: id || undefined,
+        title: document.getElementById('tutFormTitle').value,
+        category: document.getElementById('tutFormCat').value,
+        youtube_url: document.getElementById('tutFormUrl').value,
+        thumbnail: document.getElementById('tutFormThumb').value,
+        description: document.getElementById('tutFormDesc').value
+      };
+      window.confApi.saveTutorial(data);
+      closeTutModal();
+      renderTutorialsTable();
+    }
+
+    function closeTutModal() {
+      document.getElementById('tutEditModal').classList.add('hidden');
+    }
+
+    function deleteTutorial(id) {
+      if (confirm('Hapus tutorial ini?')) {
+        window.confApi.deleteTutorial(id);
+        renderTutorialsTable();
+      }
+    }
+
+    function deleteProduct(id) {
+      if (confirm('Hapus produk ini?')) {
+        window.confApi.deleteProduct(id);
+        renderProductsTable();
+      }
+    }
+
+    function switchAdminTab(name) {
+      ['tutorials', 'products', 'orders', 'users'].forEach(t => {
+        document.getElementById(`adminTab_${t}`).classList.add('hidden');
+      });
+      document.getElementById(`adminTab_${name}`).classList.remove('hidden');
+
+      document.querySelectorAll('.admin-tab').forEach(b => {
+        b.classList.remove('bg-[#0B5796]', 'text-white');
+        b.classList.add('text-slate-600');
+      });
+      event.currentTarget.classList.add('bg-[#0B5796]', 'text-white');
+      event.currentTarget.classList.remove('text-slate-600');
+    }
+
+    document.addEventListener('DOMContentLoaded', initAdmin);
+  </script>
+</body>
+</html>

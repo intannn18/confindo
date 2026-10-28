@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>30-Day Speaking Challenge — CONFindo</title>
+  <meta name="description" content="Tantangan 30 hari melatih rasa percaya diri berbicara di depan umum secara bertahap dan konsisten.">
+  <link rel="icon" type="image/png" href="../assets/logo-icon.png">
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+          colors: {
+            brand: {
+              blue: '#0B5796',
+              blueDark: '#084375',
+              orange: '#E65C00',
+              orangeDark: '#CC5200'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Universal Navbar Placeholder -->
+  <div id="navbarContainer"></div>
+
+  <!-- Main Content -->
+  <main class="flex-grow pt-24 pb-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Page Header & Dynamic Progress Banner -->
+      <div class="bg-gradient-to-r from-[#0B132B] via-[#0B5796] to-[#084375] rounded-3xl p-8 sm:p-10 text-white shadow-xl mb-12">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <div class="lg:col-span-7 space-y-3">
+            <span class="text-xs font-extrabold uppercase tracking-wider bg-white/10 text-orange-300 px-3 py-1 rounded-full backdrop-blur-sm">
+              Daily Habit Builder
+            </span>
+            <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight">
+              “30 Days to Speak with Confidence”
+            </h1>
+            <p class="text-xs sm:text-sm text-blue-100 max-w-xl leading-relaxed">
+              “Build your confidence one day at a time.” Bicaralah 1-2 menit setiap hari mengikuti instruksi harian.
+            </p>
+          </div>
+
+          <!-- Dynamic Progress Bar -->
+          <div class="lg:col-span-5 bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+            <div class="flex items-center justify-between text-sm font-bold mb-2">
+              <span id="challengeDayCountText">Day 08 / 30</span>
+              <span id="challengePercentText" class="text-orange-300">27% Selesai</span>
+            </div>
+            <div class="w-full h-3 bg-white/20 rounded-full overflow-hidden">
+              <div id="challengeProgressBar" class="h-full bg-[#E65C00] rounded-full transition-all duration-500" style="width: 27%"></div>
+            </div>
+            <p class="text-[11px] text-blue-100 mt-3">
+              Klik <strong>Complete Challenge</strong> untuk menyimpan progresmu secara persistent di database.
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 30-Day Grid -->
+      <div id="challengeGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+        <!-- Rendered by JavaScript -->
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Challenge Action Modal (With Timer & Instruction) -->
+  <div id="challengeModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 modal-backdrop">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl modal-content-box border border-slate-200 space-y-5">
+      
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div>
+          <span id="modalDayBadge" class="text-xs font-bold text-brand-orange uppercase">Day 01</span>
+          <h3 id="modalDayTitle" class="text-lg font-bold text-slate-900">Introduce Yourself</h3>
+        </div>
+        <button type="button" onclick="closeChallengeModal()" class="text-slate-400 hover:text-slate-600">✕</button>
+      </div>
+
+      <div>
+        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Instruksi Latihan:</h4>
+        <p id="modalDayInstructions" class="text-xs sm:text-sm text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-200">
+          Instruksi latihan hari ini...
+        </p>
+      </div>
+
+      <!-- Integrated Mini Timer -->
+      <div class="p-4 rounded-2xl bg-blue-50/60 border border-blue-100 text-center">
+        <span id="chTimerText" class="text-3xl font-extrabold font-mono text-[#0B5796] block mb-2">01:00</span>
+        <div class="flex justify-center gap-2">
+          <button id="chTimerStartBtn" type="button" onclick="toggleChTimer()" class="px-5 py-2 rounded-xl bg-[#0B5796] text-white text-xs font-bold">Mulai Timer</button>
+          <button type="button" onclick="resetChTimer()" class="px-3 py-2 rounded-xl bg-white text-slate-600 border border-slate-200 text-xs font-semibold">Reset</button>
+        </div>
+      </div>
+
+      <!-- Action -->
+      <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-3">
+        <button type="button" onclick="closeChallengeModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">
+          Tutup
+        </button>
+        <button 
+          id="modalCompleteBtn" 
+          type="button" 
+          class="flex-1 py-2.5 rounded-xl bg-[#E65C00] hover:bg-[#CC5200] text-white font-bold text-xs shadow-sm transition-all"
+        >
+          ✓ Complete Challenge
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Universal Footer Placeholder -->
+  <div id="footerContainer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/data.js"></script>
+  <script src="../js/audio.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/navbar.js"></script>
+  <script>
+    let activeModalDay = null;
+    let chTimeLeft = 60;
+    let chTimerRunning = false;
+    let chInterval = null;
+
+    function renderChallenges() {
+      const container = document.getElementById('challengeGrid');
+      if (!container || !window.confApi) return;
+
+      const user = window.confApi.getCurrentUser();
+      const challenges = window.confApi.getChallenges();
+      const completedMap = window.confApi.getUserChallengeProgress(user ? user.id : null);
+
+      const completedCount = Object.keys(completedMap).length;
+      const pct = Math.round((completedCount / 30) * 100);
+
+      document.getElementById('challengeDayCountText').innerText = `Day ${completedCount.toString().padStart(2, '0')} / 30`;
+      document.getElementById('challengePercentText').innerText = `${pct}% Selesai`;
+      document.getElementById('challengeProgressBar').style.width = `${pct}%`;
+
+      container.innerHTML = challenges.map(item => {
+        const isDone = !!completedMap[item.day];
+        return `
+          <div class="p-6 rounded-2xl border transition-all ${
+            isDone 
+              ? 'bg-blue-50/70 border-blue-200 shadow-sm' 
+              : 'bg-white border-slate-200 hover:border-orange-300 shadow-2xs'
+          } flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-extrabold ${isDone ? 'text-brand-blue' : 'text-slate-400'}">
+                  Day ${item.day.toString().padStart(2, '0')}
+                </span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${isDone ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-500'}">
+                  ${isDone ? '✓ Selesai' : 'Belum'}
+                </span>
+              </div>
+              <h3 class="text-base font-bold text-slate-900 mb-1.5">${item.title}</h3>
+              <p class="text-xs text-slate-500 line-clamp-3 leading-relaxed mb-4">${item.instructions}</p>
+            </div>
+
+            <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+              <button 
+                type="button" 
+                onclick="openChallengeModal(${item.day})" 
+                class="text-xs font-bold text-brand-blue hover:text-blue-800 flex items-center gap-1"
+              >
+                Buka Latihan →
+              </button>
+              <button 
+                type="button" 
+                onclick="toggleDayCompletion(${item.day}, ${!isDone})"
+                class="text-xs font-bold px-3 py-1.5 rounded-lg transition-colors ${
+                  isDone 
+                    ? 'bg-slate-200 text-slate-700 hover:bg-slate-300' 
+                    : 'bg-[#E65C00] hover:bg-[#CC5200] text-white shadow-2xs'
+                }"
+              >
+                ${isDone ? 'Batalkan' : 'Complete'}
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openChallengeModal(day) {
+      const challenges = window.confApi.getChallenges();
+      const item = challenges.find(c => c.day === day);
+      if (!item) return;
+
+      activeModalDay = day;
+      document.getElementById('modalDayBadge').innerText = `Day ${item.day.toString().padStart(2, '0')} Challenge`;
+      document.getElementById('modalDayTitle').innerText = item.title;
+      document.getElementById('modalDayInstructions').innerText = item.instructions;
+
+      resetChTimer();
+
+      const user = window.confApi.getCurrentUser();
+      const completedMap = window.confApi.getUserChallengeProgress(user ? user.id : null);
+      const isDone = !!completedMap[day];
+
+      const compBtn = document.getElementById('modalCompleteBtn');
+      compBtn.innerText = isDone ? '✓ Tandai Belum Selesai' : '✓ Complete Challenge';
+      compBtn.onclick = () => {
+        toggleDayCompletion(day, !isDone);
+        closeChallengeModal();
+      };
+
+      document.getElementById('challengeModal').classList.remove('hidden');
+    }
+
+    function closeChallengeModal() {
+      document.getElementById('challengeModal').classList.add('hidden');
+      resetChTimer();
+    }
+
+    function toggleDayCompletion(day, shouldComplete) {
+      const user = window.confApi.getCurrentUser();
+      window.confApi.toggleChallengeDay(user ? user.id : 'usr-dimas-02', day, shouldComplete);
+      if (shouldComplete && window.confAudio) confAudio.playSuccess();
+      renderChallenges();
+    }
+
+    // Mini Timer in modal
+    function toggleChTimer() {
+      const btn = document.getElementById('chTimerStartBtn');
+      if (!chTimerRunning) {
+        chTimerRunning = true;
+        btn.innerText = 'Jeda';
+        if (window.confAudio) confAudio.playStart();
+        chInterval = setInterval(() => {
+          chTimeLeft--;
+          const m = Math.floor(chTimeLeft / 60);
+          const s = chTimeLeft % 60;
+          document.getElementById('chTimerText').innerText = 
+            `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+          if (chTimeLeft <= 0) {
+            clearInterval(chInterval);
+            chTimerRunning = false;
+            btn.innerText = 'Mulai Timer';
+            if (window.confAudio) confAudio.playSuccess();
+            alert('Waktu latihan tantangan selesai! Klik Complete Challenge untuk menyimpan progres.');
+          }
+        }, 1000);
+      } else {
+        clearInterval(chInterval);
+        chTimerRunning = false;
+        btn.innerText = 'Lanjut';
+      }
+    }
+
+    function resetChTimer() {
+      clearInterval(chInterval);
+      chTimerRunning = false;
+      chTimeLeft = 60;
+      document.getElementById('chTimerText').innerText = '01:00';
+      const b = document.getElementById('chTimerStartBtn');
+      if (b) b.innerText = 'Mulai Timer';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderChallenges();
+    });
+  </script>
+</body>
+</html>

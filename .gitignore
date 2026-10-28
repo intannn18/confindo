@@ -1,0 +1,11 @@
+# Dependencies
+node_modules/
+
+# Build and archive files
+confindo-siap-upload.zip
+confindo-siap-upload/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini

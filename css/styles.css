@@ -1,0 +1,206 @@
+/* ==========================================================================
+   CONFindo - Visual Identity & Stylesheet
+   Primary Colors: Blue (#0B5796) & Orange (#E65C00)
+   Typography: Plus Jakarta Sans / Inter
+   ========================================================================== */
+
+:root {
+  --color-brand-blue: #0B5796;
+  --color-brand-blue-hover: #084375;
+  --color-brand-blue-light: #EBF3FA;
+  --color-brand-orange: #E65C00;
+  --color-brand-orange-hover: #CC5200;
+  --color-brand-orange-light: #FFF2EA;
+  --color-navy-dark: #0B132B;
+  --color-slate-900: #0F172A;
+  --color-slate-800: #1E293B;
+  --color-slate-600: #475569;
+  --color-slate-100: #F1F5F9;
+  --color-slate-50: #F8FAFC;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+  background-color: #F8FAFC;
+  color: #1E293B;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Selection */
+::selection {
+  background-color: #EBF3FA;
+  color: #0B5796;
+}
+
+/* Buttons with Brand Accents */
+.btn-brand-primary {
+  background-color: var(--color-brand-blue);
+  color: #FFFFFF;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-brand-primary:hover {
+  background-color: var(--color-brand-blue-hover);
+  transform: translateY(-1.5px);
+  box-shadow: 0 8px 20px -4px rgba(11, 87, 150, 0.3);
+}
+
+.btn-brand-orange {
+  background-color: var(--color-brand-orange);
+  color: #FFFFFF;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-brand-orange:hover {
+  background-color: var(--color-brand-orange-hover);
+  transform: translateY(-1.5px);
+  box-shadow: 0 8px 20px -4px rgba(230, 92, 0, 0.3);
+}
+
+/* Card Hover Micro-interactions */
+.card-hover {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px -8px rgba(15, 23, 42, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.04);
+}
+
+/* Modals */
+.modal-backdrop {
+  background-color: rgba(11, 19, 43, 0.7);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-content-box {
+  animation: modalScaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalScaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Circular Timer */
+.timer-circle-bg {
+  stroke: #E2E8F0;
+}
+
+.timer-circle-progress {
+  stroke: #0B5796;
+  transition: stroke-dashoffset 0.85s linear, stroke 0.3s ease;
+  stroke-linecap: round;
+}
+
+.timer-circle-progress.warning {
+  stroke: #E65C00;
+}
+
+.timer-circle-progress.danger {
+  stroke: #EF4444;
+}
+
+/* Audio Visualizer Wave */
+.audio-wave-bar {
+  display: inline-block;
+  width: 4px;
+  height: 10px;
+  background-color: #0B5796;
+  border-radius: 9999px;
+  margin: 0 1.5px;
+  transition: height 0.15s ease;
+}
+
+.speaking-active .audio-wave-bar {
+  animation: audioWave 1.2s ease-in-out infinite;
+}
+
+.speaking-active .audio-wave-bar:nth-child(2) { animation-delay: 0.15s; }
+.speaking-active .audio-wave-bar:nth-child(3) { animation-delay: 0.3s; }
+.speaking-active .audio-wave-bar:nth-child(4) { animation-delay: 0.45s; }
+.speaking-active .audio-wave-bar:nth-child(5) { animation-delay: 0.6s; }
+.speaking-active .audio-wave-bar:nth-child(6) { animation-delay: 0.2s; }
+.speaking-active .audio-wave-bar:nth-child(7) { animation-delay: 0.35s; }
+
+@keyframes audioWave {
+  0%, 100% { height: 8px; }
+  50% { height: 26px; }
+}
+
+/* Custom Checkbox */
+.custom-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #CBD5E1;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+  display: inline-grid;
+  place-content: center;
+  transition: all 0.18s ease;
+}
+
+.custom-checkbox:checked {
+  background-color: #0B5796;
+  border-color: #0B5796;
+}
+
+.custom-checkbox:checked::before {
+  content: "";
+  width: 10px;
+  height: 6px;
+  border-left: 2px solid white;
+  border-bottom: 2px solid white;
+  transform: rotate(-45deg) translate(1px, -1px);
+}
+
+/* Counter Pop */
+.counter-tap-animate {
+  animation: counterPop 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes counterPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mengunduh Berkas Digital — CONFindo</title>
+  <link rel="icon" type="image/png" href="../assets/logo-icon.png">
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+          colors: {
+            brand: {
+              blue: '#0B5796',
+              blueDark: '#084375',
+              orange: '#E65C00',
+              orangeDark: '#CC5200'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Universal Navbar Placeholder -->
+  <div id="navbarContainer"></div>
+
+  <!-- Main Auto-Download Box -->
+  <main class="flex-grow flex items-center justify-center p-4 pt-24 pb-16">
+    <div class="max-w-md w-full bg-white rounded-3xl p-8 border border-slate-200 shadow-xl text-center space-y-6">
+      
+      <!-- Animated Download Icon -->
+      <div class="relative w-20 h-20 mx-auto flex items-center justify-center">
+        <div class="absolute inset-0 rounded-3xl bg-blue-100 animate-ping opacity-30"></div>
+        <div id="fileTypeIconBox" class="relative z-10 w-20 h-20 rounded-3xl bg-blue-50 border-2 border-brand-blue text-brand-blue flex items-center justify-center text-3xl font-extrabold shadow-sm">
+          ⬇️
+        </div>
+      </div>
+
+      <!-- Heading -->
+      <div class="space-y-1.5">
+        <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+          Akses Otomatis Real-Time
+        </span>
+        <h1 class="text-xl font-extrabold text-slate-900 mt-2">Mengunduh Berkas Asli Anda...</h1>
+        <p class="text-xs text-slate-500">
+          Unduhan berkas resmi akan dimulai secara otomatis dalam sekejap.
+        </p>
+      </div>
+
+      <!-- File Details Card -->
+      <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-left text-xs space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-slate-500">Nama Produk:</span>
+          <strong id="dlProdTitle" class="text-slate-900 truncate max-w-[200px]">Nama Produk</strong>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-slate-500">Nama Berkas:</span>
+          <span id="dlFileName" class="font-mono font-bold text-brand-blue">file.pdf</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-slate-500">Format:</span>
+          <span id="dlFileFormat" class="font-semibold text-slate-800">Berkas Asli (.pdf)</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-slate-500">Status Lisensi:</span>
+          <span class="font-bold text-emerald-600">✓ Terverifikasi Aktif</span>
+        </div>
+      </div>
+
+      <!-- Status Indicator -->
+      <div id="downloadStatusNotice" class="p-3 bg-blue-50/70 rounded-xl border border-blue-100 text-[11px] text-blue-900 flex items-center justify-center gap-2">
+        <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+        <span>Jika unduhan tidak mulai otomatis, klik tombol di bawah:</span>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="space-y-2.5">
+        <a 
+          id="manualDownloadBtn" 
+          href="#" 
+          download 
+          class="block w-full py-3.5 rounded-xl bg-[#E65C00] hover:bg-[#CC5200] text-white text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2"
+        >
+          <span>⬇️ Unduh Ulang Berkas Asli</span>
+        </a>
+
+        <a 
+          id="viewReaderBtn" 
+          href="#" 
+          class="block w-full py-2.5 rounded-xl bg-[#0B5796] hover:bg-[#084375] text-white text-xs font-bold transition-all shadow-sm"
+        >
+          📖 Buka di Online PDF Reader
+        </a>
+
+        <a 
+          href="../dashboard/index.html" 
+          class="block w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold"
+        >
+          Ke Dashboard Pengguna
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Universal Footer Placeholder -->
+  <div id="footerContainer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/data.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/navbar.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const prodId = params.get('id') || 'prod-buku-ajar-public-speaking';
+
+      const prod = window.confApi ? window.confApi.getProductById(prodId) : null;
+      if (!prod) {
+        alert('Produk tidak ditemukan!');
+        window.location.href = '../store/index.html';
+        return;
+      }
+
+      const isPptx = prod.id === 'prod-presentation-template';
+      const targetPath = isPptx 
+        ? '../assets/templates/confindo-presentation-template-pro.pptx' 
+        : `../assets/pdf/${prod.pdf_filename || 'public-speaking-starter-kit.pdf'}`;
+      const fileName = isPptx 
+        ? 'confindo-presentation-template-pro.pptx' 
+        : (prod.pdf_filename || `${prod.id}.pdf`);
+
+      document.title = `Mengunduh ${prod.name} — CONFindo`;
+      document.getElementById('dlProdTitle').innerText = prod.name;
+      document.getElementById('dlFileName').innerText = fileName;
+      document.getElementById('dlFileFormat').innerText = isPptx ? 'PowerPoint Master (.PPTX)' : 'Dokumen PDF Asli (.PDF)';
+      document.getElementById('fileTypeIconBox').innerText = isPptx ? '📊' : '📄';
+
+      const manualBtn = document.getElementById('manualDownloadBtn');
+      manualBtn.href = targetPath;
+      manualBtn.download = fileName;
+      manualBtn.innerHTML = `<span>⬇️ Unduh Sekarang (${isPptx ? '.pptx' : '.pdf'})</span>`;
+
+      const readerBtn = document.getElementById('viewReaderBtn');
+      readerBtn.href = `../store/viewer.html?id=${prod.id}`;
+
+      // Automatically trigger the real file download after 300ms!
+      setTimeout(() => {
+        const autoLink = document.createElement('a');
+        autoLink.href = targetPath;
+        autoLink.download = fileName;
+        document.body.appendChild(autoLink);
+        autoLink.click();
+        document.body.removeChild(autoLink);
+
+        document.getElementById('downloadStatusNotice').innerHTML = `
+          <span class="text-emerald-600 font-bold">✓ Unduhan telah dimulai!</span>
+          <span class="text-slate-500">Periksa folder Download di perangkat Anda.</span>
+        `;
+      }, 350);
+    });
+  </script>
+</body>
+</html>

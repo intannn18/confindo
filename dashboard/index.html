@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Dashboard — CONFindo</title>
+  <link rel="icon" type="image/png" href="../assets/logo-icon.png">
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+          colors: {
+            brand: {
+              blue: '#0B5796',
+              blueDark: '#084375',
+              orange: '#E65C00',
+              orangeDark: '#CC5200'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Universal Navbar Placeholder -->
+  <div id="navbarContainer"></div>
+
+  <!-- Main Content -->
+  <main class="flex-grow pt-24 pb-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- User Greeting & Profile Bar -->
+      <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm mb-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div class="flex items-center gap-4 text-center sm:text-left">
+          <img id="dashAvatar" src="" alt="Avatar" class="w-16 h-16 rounded-2xl object-cover border-2 border-slate-200 shadow-sm shrink-0">
+          <div>
+            <h1 class="text-2xl font-extrabold text-slate-900">
+              Welcome back, <span id="dashGreetingName" class="text-brand-blue">Siswa</span>! 👋
+            </h1>
+            <p id="dashUserEmail" class="text-xs text-slate-400 font-medium">user@confindo.id</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <a href="../practice/index.html" class="px-5 py-2.5 rounded-xl bg-[#0B5796] hover:bg-[#084375] text-white text-xs font-bold transition-all shadow-sm">
+            Mulai Latihan Hari Ini →
+          </a>
+          <button type="button" onclick="logoutUser()" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:text-rose-600 text-xs font-semibold hover:bg-slate-50">
+            Logout
+          </button>
+        </div>
+      </div>
+
+      <!-- Overview Stats (Challenge, Saved, Purchases) -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+        
+        <!-- Challenge Progress -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+            <span>Challenge Progress</span>
+            <span class="text-brand-orange">30 Hari</span>
+          </div>
+          <span id="statChallengeDay" class="text-2xl font-extrabold text-slate-900 block">8 / 30 Days Completed</span>
+          <div class="w-full h-2.5 bg-slate-100 rounded-full mt-3 overflow-hidden">
+            <div id="statChallengeBar" class="h-full bg-[#E65C00] rounded-full transition-all" style="width: 27%"></div>
+          </div>
+          <a href="../challenge/index.html" class="text-[11px] font-bold text-brand-orange mt-2 inline-block hover:underline">Lanjutkan Challenge →</a>
+        </div>
+
+        <!-- Learning Progress / Bookmarks -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+            <span>Saved Tutorials</span>
+            <span class="text-brand-blue">YouTube</span>
+          </div>
+          <span id="statSavedCount" class="text-2xl font-extrabold text-slate-900 block">0 Tutorial</span>
+          <p class="text-xs text-slate-500 mt-2">Materi favorit yang tersimpan.</p>
+          <a href="../learn/index.html" class="text-[11px] font-bold text-brand-blue mt-2 inline-block hover:underline">Jelajahi Video →</a>
+        </div>
+
+        <!-- My Purchases -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+            <span>My Purchases</span>
+            <span class="text-emerald-600">Digital Toolkit</span>
+          </div>
+          <span id="statPurchasesCount" class="text-2xl font-extrabold text-slate-900 block">0 Produk</span>
+          <p class="text-xs text-slate-500 mt-2">Toolkit aktif berlisensi seumur hidup.</p>
+          <a href="../store/index.html" class="text-[11px] font-bold text-emerald-600 mt-2 inline-block hover:underline">Lihat Store →</a>
+        </div>
+
+      </div>
+
+      <!-- Dashboard Tabs Navigation -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-2 mb-6 flex gap-2 text-xs font-bold overflow-x-auto">
+        <button type="button" onclick="switchDashTab('purchases')" class="dash-tab active px-4 py-2 rounded-xl bg-[#0B5796] text-white">My Purchases</button>
+        <button type="button" onclick="switchDashTab('history')" class="dash-tab px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100">Practice History</button>
+        <button type="button" onclick="switchDashTab('saved')" class="dash-tab px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100">Saved Tutorials</button>
+        <button type="button" onclick="switchDashTab('profile')" class="dash-tab px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100">Profile Data</button>
+      </div>
+
+      <!-- TAB 1: My Purchases -->
+      <div id="tabContent_purchases" class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
+        <div class="pb-3 border-b border-slate-100 flex items-center justify-between">
+          <h2 class="text-lg font-bold text-slate-900">Digital Product Delivery & Access</h2>
+          <span class="text-xs text-emerald-600 font-bold bg-emerald-50 px-2.5 py-1 rounded-full">Secure File Delivery</span>
+        </div>
+        <div id="purchasesList" class="space-y-3">
+          <!-- Populated by script -->
+        </div>
+      </div>
+
+      <!-- TAB 2: Practice History -->
+      <div id="tabContent_history" class="hidden bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
+        <div class="pb-3 border-b border-slate-100">
+          <h2 class="text-lg font-bold text-slate-900">Riwayat Latihan Mandiri</h2>
+          <p class="text-xs text-slate-500">Rekaman sesi 1-Minute Speaking dan checklist evaluasi.</p>
+        </div>
+        <div id="historyTableContainer" class="overflow-x-auto">
+          <!-- Populated by script -->
+        </div>
+      </div>
+
+      <!-- TAB 3: Saved Tutorials -->
+      <div id="tabContent_saved" class="hidden bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
+        <div class="pb-3 border-b border-slate-100">
+          <h2 class="text-lg font-bold text-slate-900">Tutorial yang Disimpan</h2>
+        </div>
+        <div id="savedTutorialsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Populated by script -->
+        </div>
+      </div>
+
+      <!-- TAB 4: Profile Data -->
+      <div id="tabContent_profile" class="hidden bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
+        <div class="pb-3 border-b border-slate-100">
+          <h2 class="text-lg font-bold text-slate-900">Data Akun Pengguna</h2>
+        </div>
+        <div class="max-w-md space-y-3 text-xs">
+          <div>
+            <label class="block text-slate-500 font-bold mb-1">Nama Lengkap:</label>
+            <input id="profileNameInput" type="text" class="w-full p-2.5 rounded-xl border border-slate-200 font-semibold" readonly>
+          </div>
+          <div>
+            <label class="block text-slate-500 font-bold mb-1">Email:</label>
+            <input id="profileEmailInput" type="text" class="w-full p-2.5 rounded-xl border border-slate-200 font-semibold" readonly>
+          </div>
+          <div>
+            <label class="block text-slate-500 font-bold mb-1">Tipe Akun:</label>
+            <input id="profileRoleInput" type="text" class="w-full p-2.5 rounded-xl border border-slate-200 font-semibold" readonly>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- License Certificate & Invoice Modal -->
+  <div id="licenseModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 modal-backdrop">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl modal-content-box border border-slate-200 space-y-5">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div>
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+            Sertifikat Lisensi Resmi
+          </span>
+          <h3 class="text-base font-extrabold text-slate-900 mt-1">Bukti Kepemilikan Digital</h3>
+        </div>
+        <button type="button" onclick="closeLicenseModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center font-bold">
+          ✕
+        </button>
+      </div>
+
+      <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-xs space-y-2.5">
+        <div class="flex justify-between items-center text-slate-600">
+          <span>Produk:</span>
+          <strong id="licModalProdName" class="text-slate-900 text-right">Nama Produk</strong>
+        </div>
+        <div class="flex justify-between items-center text-slate-600">
+          <span>Pemilik:</span>
+          <span id="licModalUserName" class="font-semibold text-slate-800 text-right">Nama Pengguna</span>
+        </div>
+        <div class="flex justify-between items-center text-slate-600">
+          <span>Email:</span>
+          <span id="licModalUserEmail" class="font-mono text-slate-700 text-right">email@confindo.id</span>
+        </div>
+        <div class="flex justify-between items-center text-slate-600">
+          <span>Order ID:</span>
+          <span id="licModalOrderId" class="font-mono font-bold text-slate-900 text-right">ord-2026-001</span>
+        </div>
+        <div class="flex justify-between items-center text-slate-600">
+          <span>Referensi Transaksi:</span>
+          <span id="licModalRef" class="font-mono text-[11px] text-slate-500 text-right">WA-OFFICIAL</span>
+        </div>
+        <div class="flex justify-between items-center text-slate-600">
+          <span>Waktu Pembayaran:</span>
+          <span id="licModalDate" class="font-semibold text-slate-800 text-right">22 Okt 2026</span>
+        </div>
+      </div>
+
+      <div class="p-3 bg-emerald-50/70 rounded-xl border border-emerald-100 text-[11px] text-emerald-900 flex items-center gap-2">
+        <span class="text-base">🛡️</span>
+        <span>Status Lisensi: <strong>Aktif Permanen (Lifetime Access)</strong>. Bebas diakses dan diunduh berulang.</span>
+      </div>
+
+      <button 
+        type="button" 
+        onclick="closeLicenseModal()" 
+        class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl"
+      >
+        Tutup
+      </button>
+    </div>
+  </div>
+
+  <!-- Universal Footer Placeholder -->
+  <div id="footerContainer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/data.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/navbar.js"></script>
+  <script>
+    let currentUser = null;
+
+    function initDashboard() {
+      currentUser = window.confApi ? window.confApi.getCurrentUser() : null;
+      if (!currentUser) {
+        alert('Silakan login terlebih dahulu untuk mengakses dashboard Anda.');
+        window.location.href = '../login/index.html';
+        return;
+      }
+
+      document.getElementById('dashGreetingName').innerText = currentUser.name.split(' ')[0];
+      document.getElementById('dashUserEmail').innerText = currentUser.email;
+      document.getElementById('dashAvatar').src = currentUser.profile_image || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=0B5796&color=fff`;
+
+      document.getElementById('profileNameInput').value = currentUser.name;
+      document.getElementById('profileEmailInput').value = currentUser.email;
+      document.getElementById('profileRoleInput').value = (currentUser.role === 'admin' ? 'Administrator' : 'Anggota Pembelajar Mandiri');
+
+      // 1. Challenge stats
+      const chProgress = window.confApi.getUserChallengeProgress(currentUser.id);
+      const chCount = Object.keys(chProgress).length;
+      document.getElementById('statChallengeDay').innerText = `${chCount} / 30 Days Completed`;
+      document.getElementById('statChallengeBar').style.width = `${Math.round((chCount / 30) * 100)}%`;
+
+      // 2. Saved Tutorials
+      const savedTuts = window.confApi.getSavedTutorials(currentUser.id);
+      document.getElementById('statSavedCount').innerText = `${savedTuts.length} Tutorial`;
+      renderSavedTutorials(savedTuts);
+
+      // 3. Purchases
+      const purchases = window.confApi.getUserPurchasedProducts(currentUser.id);
+      document.getElementById('statPurchasesCount').innerText = `${purchases.length} Produk`;
+      renderPurchases(purchases);
+
+      // 4. Practice History
+      const history = window.confApi.getUserPracticeHistory(currentUser.id);
+      renderHistory(history);
+    }
+
+    function renderPurchases(list) {
+      const container = document.getElementById('purchasesList');
+      if (!container) return;
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8 bg-slate-50 rounded-2xl border border-slate-200">
+            <p class="text-xs text-slate-500 mb-2">Belum ada produk digital yang dibeli.</p>
+            <a href="../store/index.html" class="text-xs font-bold text-brand-orange hover:underline">Kunjungi CONFindo Store →</a>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(p => {
+        const isPptx = p.id === 'prod-presentation-template';
+        const targetFile = isPptx 
+          ? '../assets/templates/confindo-presentation-template-pro.pptx' 
+          : `../assets/pdf/${p.pdf_filename || 'public-speaking-starter-kit.pdf'}`;
+        const fileName = isPptx 
+          ? 'confindo-presentation-template-pro.pptx' 
+          : (p.pdf_filename || `${p.id}.pdf`);
+        const fileLabel = isPptx ? 'Download Master PPTX Asli' : 'Download Berkas PDF Asli';
+        const fileIcon = isPptx ? '📊' : '📄';
+        const imgUrl = window.confApi && window.confApi.getProductImageUrl ? window.confApi.getProductImageUrl(p, true) : (p.image.startsWith('http') ? p.image : '../' + p.image.replace(/^\.\.\//, ''));
+
+        return `
+          <div class="p-5 rounded-2xl border border-slate-200 bg-white shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-5 hover:border-blue-200 transition-all">
+            <div class="flex items-start gap-4">
+              <img src="${imgUrl}" class="w-16 h-20 rounded-xl object-cover shrink-0 border border-slate-200 shadow-sm bg-slate-100">
+              <div class="space-y-1">
+                <div class="flex items-center gap-2">
+                  <span class="text-[10px] font-bold text-white bg-brand-blue px-2 py-0.5 rounded-full">
+                    ${p.badge || (isPptx ? 'PPTX Master' : 'PDF Digital')}
+                  </span>
+                  <span class="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-bold border border-emerald-200">
+                    ✓ Lisensi Aktif
+                  </span>
+                </div>
+                <h4 class="text-sm font-extrabold text-slate-900">${p.name}</h4>
+                <p class="text-[11px] text-slate-500">${p.file_format || (isPptx ? 'Master PowerPoint (.PPTX) & PDF Guide' : 'Dokumen PDF Digital Interaktif')} • ${p.file_size || '35 KB'}</p>
+                <div class="text-[10px] text-slate-400">
+                  <span>Lisensi atas nama: <strong>${currentUser ? currentUser.name : 'Pengguna'}</strong></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full md:w-auto">
+              <a 
+                href="../store/viewer.html?id=${p.id}" 
+                class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-[#0B5796] hover:bg-[#084375] text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition-all whitespace-nowrap"
+              >
+                <span>📖 Buka Reader</span>
+              </a>
+
+              <a 
+                href="${targetFile}" 
+                download="${fileName}"
+                class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-[#E65C00] hover:bg-[#CC5200] text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition-all whitespace-nowrap"
+              >
+                <span>${fileIcon}</span>
+                <span>${fileLabel}</span>
+              </a>
+
+              <button 
+                type="button" 
+                onclick="showLicenseModal('${p.id}')"
+                class="px-3 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-600 text-xs font-semibold"
+                title="Lihat Sertifikat Lisensi & Invoice"
+              >
+                📄 Sertifikat
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function showLicenseModal(prodId) {
+      const p = window.confApi.getProductById(prodId);
+      if (!p) return;
+
+      const user = currentUser || { name: 'Dimas Pratama', email: 'dimas@example.com' };
+      const order = (window.confApi.getUserOrders(user.id) || [])[0] || {
+        id: 'ORD-QRIS-' + Math.floor(1000 + Math.random() * 9000),
+        payment_reference: 'QRIS-ID1026614998627',
+        payment_method: 'QRIS Resmi'
+      };
+
+      document.getElementById('licModalProdName').innerText = p.name;
+      document.getElementById('licModalUserName').innerText = user.name;
+      document.getElementById('licModalUserEmail').innerText = user.email;
+      document.getElementById('licModalOrderId').innerText = order.id;
+      document.getElementById('licModalRef').innerText = order.payment_reference || 'QRIS-ID1026614998627';
+      document.getElementById('licModalDate').innerText = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+
+      document.getElementById('licenseModal').classList.remove('hidden');
+    }
+
+    function closeLicenseModal() {
+      document.getElementById('licenseModal').classList.add('hidden');
+    }
+
+    function renderHistory(list) {
+      const container = document.getElementById('historyTableContainer');
+      if (!container) return;
+
+      if (list.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-400 py-6 text-center">Belum ada riwayat latihan tercatat.</p>`;
+        return;
+      }
+
+      container.innerHTML = `
+        <table class="w-full text-left text-xs">
+          <thead>
+            <tr class="border-b border-slate-200 text-slate-400 font-bold uppercase text-[10px]">
+              <th class="pb-3">Topik Latihan</th>
+              <th class="pb-3">Durasi</th>
+              <th class="pb-3">Skor Checklist</th>
+              <th class="pb-3">Tanggal</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            ${list.map(h => `
+              <tr>
+                <td class="py-3 font-bold text-slate-800">${h.topic}</td>
+                <td class="py-3 text-slate-600">${h.duration}</td>
+                <td class="py-3 text-brand-blue font-bold">${h.checklist_score || '-'}</td>
+                <td class="py-3 text-slate-400">${new Date(h.created_at).toLocaleDateString('id-ID')}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderSavedTutorials(list) {
+      const container = document.getElementById('savedTutorialsGrid');
+      if (!container) return;
+
+      if (list.length === 0) {
+        container.innerHTML = `<div class="col-span-full text-center py-8 text-xs text-slate-400">Belum ada tutorial tersimpan.</div>`;
+        return;
+      }
+
+      container.innerHTML = list.map(t => `
+        <div class="bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden shadow-2xs p-4 flex flex-col justify-between">
+          <div>
+            <span class="text-[10px] font-bold text-brand-blue block mb-1">${t.category}</span>
+            <h4 class="text-xs font-bold text-slate-900 mb-2">${t.title}</h4>
+            <p class="text-[11px] text-slate-500 line-clamp-2">${t.description}</p>
+          </div>
+          <div class="pt-3 border-t border-slate-200/80 mt-3 flex justify-between items-center">
+            <span class="text-[10px] text-slate-400">${t.duration}</span>
+            <a href="../learn/index.html?watch=${t.id}" class="text-xs font-bold text-brand-blue hover:underline">Tonton →</a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function switchDashTab(tabName) {
+      ['purchases', 'history', 'saved', 'profile'].forEach(t => {
+        document.getElementById(`tabContent_${t}`).classList.add('hidden');
+      });
+      document.getElementById(`tabContent_${tabName}`).classList.remove('hidden');
+
+      document.querySelectorAll('.dash-tab').forEach(b => {
+        b.classList.remove('bg-[#0B5796]', 'text-white');
+        b.classList.add('text-slate-600');
+      });
+      event.currentTarget.classList.add('bg-[#0B5796]', 'text-white');
+      event.currentTarget.classList.remove('text-slate-600');
+    }
+
+    function logoutUser() {
+      window.confApi.logout();
+      window.location.href = '../index.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', initDashboard);
+  </script>
+</body>
+</html>

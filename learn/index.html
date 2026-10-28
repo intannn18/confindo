@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learn Public Speaking — CONFindo</title>
+  <meta name="description" content="Koleksi video tutorial YouTube dan materi public speaking mandiri terlengkap untuk pemula dan profesional.">
+  <link rel="icon" type="image/png" href="../assets/logo-icon.png">
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+          colors: {
+            brand: {
+              blue: '#0B5796',
+              blueDark: '#084375',
+              orange: '#E65C00',
+              orangeDark: '#CC5200'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Universal Navbar Placeholder -->
+  <div id="navbarContainer"></div>
+
+  <!-- Main Content -->
+  <main class="flex-grow pt-24 pb-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Page Header -->
+      <div class="mb-10 text-center sm:text-left">
+        <span class="text-xs font-extrabold uppercase tracking-wider text-brand-blue bg-blue-50 px-3 py-1 rounded-full">
+          Tutorial Database
+        </span>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-3 tracking-tight">
+          “Learn Public Speaking”
+        </h1>
+        <p class="text-slate-600 text-sm sm:text-base mt-2 max-w-2xl">
+          “Learn the skills you need to speak clearly, confidently, and effectively.”
+        </p>
+      </div>
+
+      <!-- Search & Category Filters -->
+      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs mb-8 space-y-4">
+        
+        <div class="flex flex-col sm:flex-row gap-3 items-center justify-between">
+          <!-- Live Search Bar -->
+          <div class="relative w-full sm:w-80">
+            <input 
+              id="learnSearchInput" 
+              type="text" 
+              placeholder="Cari judul materi atau topik..." 
+              class="w-full text-xs p-2.5 pl-9 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          </div>
+
+          <div class="text-xs text-slate-500 font-medium">
+            Sumber: Video Kurasi YouTube Berkualitas
+          </div>
+        </div>
+
+        <!-- 9 Category Filter Badges -->
+        <div class="overflow-x-auto pb-1 -mx-2 px-2">
+          <div id="learnCategoryTabs" class="flex items-center gap-1.5 min-w-max text-xs font-semibold">
+            <button type="button" data-cat="all" class="cat-pill active px-3.5 py-1.5 rounded-full bg-[#0B5796] text-white">Semua Kategori</button>
+            <button type="button" data-cat="Public Speaking Basics" class="cat-pill px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700">Public Speaking Basics</button>
+            <button type="button" data-cat="Confidence" class="cat-pill px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700">Confidence</button>
+            <button type="button" data-cat="Presentation" class="cat-pill px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700">Presentation</button>
+            <button type="button" data-cat="Body Language" class="cat-pill px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700">Body Language</button>
+            <button type="button" data-cat="Voice & Intonation" class="cat-pill px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700">Voice & Intonation</button>
+            <button type="button" data-cat="Storytelling" class="cat-pill px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700">Storytelling</button>
+            <button type="button" data-cat="Interview" class="cat-pill px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700">Interview</button>
+            <button type="button" data-cat="Speech Preparation" class="cat-pill px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700">Speech Preparation</button>
+            <button type="button" data-cat="Handling Nervousness" class="cat-pill px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700">Handling Nervousness</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Tutorials Grid -->
+      <div id="learnGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Rendered by JavaScript -->
+      </div>
+
+    </div>
+  </main>
+
+  <!-- YouTube Player Modal -->
+  <div id="learnVideoModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 modal-backdrop">
+    <div class="bg-white rounded-3xl overflow-hidden max-w-3xl w-full shadow-2xl modal-content-box border border-slate-200">
+      
+      <div class="relative aspect-video bg-black">
+        <div id="learnIframeContainer" class="w-full h-full"></div>
+        <button 
+          type="button" 
+          onclick="closeVideoModal()" 
+          class="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/70 hover:bg-black text-white flex items-center justify-center z-10"
+        >✕</button>
+      </div>
+
+      <div class="p-6 sm:p-8 max-h-[48vh] overflow-y-auto space-y-4">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <span id="modalCategory" class="text-xs font-bold text-brand-orange uppercase block mb-1">Kategori</span>
+            <h3 id="modalTitle" class="text-lg sm:text-xl font-bold text-slate-900">Judul Tutorial</h3>
+          </div>
+          <span class="text-[11px] font-bold text-brand-blue bg-blue-50 px-3 py-1.5 rounded-xl border border-blue-200 shrink-0">
+            ▶ Putar Langsung
+          </span>
+        </div>
+
+        <p id="modalDesc" class="text-xs sm:text-sm text-slate-600 leading-relaxed"></p>
+
+        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/90">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">Poin Penting (Key Takeaways):</h4>
+          <ul id="modalTakeaways" class="space-y-1.5 text-xs text-slate-600"></ul>
+        </div>
+
+        <div class="pt-2 flex items-center justify-between">
+          <button id="modalSaveBtn" type="button" class="px-4 py-2 bg-blue-50 text-brand-blue rounded-xl text-xs font-bold hover:bg-blue-100 transition-colors">
+            + Simpan Tutorial
+          </button>
+          <button type="button" onclick="closeVideoModal()" class="px-5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold">
+            Tutup
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Universal Footer Placeholder -->
+  <div id="footerContainer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/data.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/navbar.js"></script>
+  <script>
+    let activeCat = 'all';
+    let searchQuery = '';
+    let currentModalTutId = null;
+
+    function renderTutorials() {
+      const container = document.getElementById('learnGrid');
+      if (!container || !window.confApi) return;
+
+      const user = window.confApi.getCurrentUser();
+      const list = window.confApi.getTutorials(activeCat, searchQuery);
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full text-center py-12 bg-white rounded-2xl border border-slate-200 p-8">
+            <p class="text-slate-500 font-semibold text-sm">Tidak ada tutorial yang sesuai dengan filter.</p>
+            <button type="button" onclick="resetFilters()" class="mt-3 px-4 py-2 bg-[#0B5796] text-white text-xs font-bold rounded-xl">Lihat Semua Tutorial</button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(t => {
+        const isSaved = user ? window.confApi.isTutorialSaved(t.id, user.id) : false;
+        return `
+          <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm card-hover flex flex-col justify-between group">
+            <div>
+              <div id="learnCardPlayer_${t.id}" class="aspect-video bg-slate-900 relative cursor-pointer" onclick="playInlineTutorial('${t.id}')">
+                <img src="${t.thumbnail}" alt="${t.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90">
+                <div class="absolute inset-0 bg-black/30 flex items-center justify-center">
+                  <div class="w-12 h-12 rounded-full bg-[#0B5796]/90 text-white flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:bg-[#E65C00] transition-all">
+                    <svg class="w-5 h-5 translate-x-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                  </div>
+                </div>
+                <span class="absolute bottom-2.5 right-2.5 text-[10px] font-bold bg-black/80 text-white px-2 py-0.5 rounded backdrop-blur-sm">${t.duration}</span>
+                <span class="absolute top-2.5 left-2.5 text-[10px] font-bold bg-white/95 text-[#0B5796] px-2.5 py-0.5 rounded-full shadow-2xs">${t.categoryName || t.category}</span>
+              </div>
+              
+              <div class="p-5">
+                <div class="flex items-center justify-between text-[11px] text-slate-500 mb-1.5">
+                  <span class="font-medium truncate max-w-[200px]">${t.speaker || 'CONFindo Series'}</span>
+                  <span class="text-orange-700 bg-orange-50 px-2 py-0.5 rounded font-bold">${t.level || 'Semua Tingkat'}</span>
+                </div>
+                <h3 class="font-bold text-slate-900 group-hover:text-brand-blue transition-colors line-clamp-2 mb-2 cursor-pointer" onclick="openVideoModal('${t.id}')">
+                  ${t.title}
+                </h3>
+                <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed mb-4">
+                  ${t.description}
+                </p>
+              </div>
+            </div>
+
+            <div class="p-5 pt-0 border-t border-slate-100 pt-3 flex items-center justify-between">
+              <button type="button" onclick="openVideoModal('${t.id}')" class="text-xs font-bold text-brand-blue hover:text-blue-800 flex items-center gap-1">
+                ▶ Putar & Ringkasan →
+              </button>
+              <button 
+                type="button" 
+                onclick="handleToggleSave('${t.id}', event)" 
+                class="p-1.5 rounded-lg text-slate-400 hover:text-brand-blue hover:bg-slate-100 transition-colors"
+                title="${isSaved ? 'Hapus dari Simpanan' : 'Simpan Tutorial'}"
+              >
+                <svg class="w-4 h-4 ${isSaved ? 'text-[#0B5796] fill-current' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function playInlineTutorial(tutId) {
+      const tut = window.confApi.getTutorialById(tutId);
+      if (!tut) return;
+      const box = document.getElementById('learnCardPlayer_' + tutId);
+      if (!box) return;
+      box.removeAttribute('onclick');
+      box.classList.remove('cursor-pointer');
+      box.innerHTML = window.confApi.getYoutubeEmbedIframe(tut, true);
+    }
+
+    function openVideoModal(tutId) {
+      const tut = window.confApi.getTutorialById(tutId);
+      if (!tut) return;
+
+      currentModalTutId = tutId;
+      document.getElementById('modalTitle').innerText = tut.title;
+      document.getElementById('modalCategory').innerText = (tut.categoryName || tut.category) + ' • ' + tut.duration;
+      document.getElementById('modalDesc').innerText = tut.description;
+
+      document.getElementById('learnIframeContainer').innerHTML = window.confApi.getYoutubeEmbedIframe(tut, true);
+
+      const takeawaysEl = document.getElementById('modalTakeaways');
+      takeawaysEl.innerHTML = (tut.takeaways || []).map(item => `
+        <li class="flex items-start gap-2">
+          <span class="text-emerald-500 font-bold">✓</span>
+          <span>${item}</span>
+        </li>
+      `).join('') || '<li>Pahami materi secara mendalam dan terapkan dalam latihan mandiri.</li>';
+
+      const user = window.confApi.getCurrentUser();
+      const saveBtn = document.getElementById('modalSaveBtn');
+      if (user && window.confApi.isTutorialSaved(tutId, user.id)) {
+        saveBtn.innerText = '✓ Tersimpan di Dashboard';
+        saveBtn.className = 'px-4 py-2 bg-emerald-50 text-emerald-700 rounded-xl text-xs font-bold';
+      } else {
+        saveBtn.innerText = '+ Simpan Tutorial';
+        saveBtn.className = 'px-4 py-2 bg-blue-50 text-brand-blue rounded-xl text-xs font-bold hover:bg-blue-100';
+      }
+      saveBtn.onclick = () => {
+        handleToggleSave(tutId);
+        openVideoModal(tutId);
+      };
+
+      document.getElementById('learnVideoModal').classList.remove('hidden');
+    }
+
+    function closeVideoModal() {
+      document.getElementById('learnVideoModal').classList.add('hidden');
+      document.getElementById('learnIframeContainer').innerHTML = '';
+    }
+
+    function handleToggleSave(tutId, event) {
+      if (event) event.stopPropagation();
+      const user = window.confApi.getCurrentUser();
+      if (!user) {
+        alert('Silakan login terlebih dahulu untuk menyimpan tutorial ke dashboard Anda.');
+        window.location.href = '../login/index.html';
+        return;
+      }
+      const res = window.confApi.toggleSaveTutorial(tutId, user.id);
+      renderTutorials();
+    }
+
+    function resetFilters() {
+      activeCat = 'all';
+      searchQuery = '';
+      document.getElementById('learnSearchInput').value = '';
+      document.querySelectorAll('.cat-pill').forEach(b => {
+        b.classList.remove('bg-[#0B5796]', 'text-white');
+        b.classList.add('bg-slate-100', 'text-slate-700');
+        if (b.getAttribute('data-cat') === 'all') {
+          b.classList.add('bg-[#0B5796]', 'text-white');
+          b.classList.remove('bg-slate-100', 'text-slate-700');
+        }
+      });
+      renderTutorials();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check authentication: Learn page requires login!
+      const currentUser = window.confApi ? window.confApi.getCurrentUser() : null;
+      if (!currentUser) {
+        window.showLoginRequiredModal('learn', '../', 'Login untuk Membuka Modul Learn', 'Materi video tutorial YouTube terarah, panduan vokal, dan struktur public speaking hanya dapat diakses setelah Anda masuk ke platform CONFindo.');
+      }
+
+      renderTutorials();
+
+      // Check URL query for auto-watch
+      const params = new URLSearchParams(window.location.search);
+      const watchId = params.get('watch');
+      if (watchId) {
+        if (!currentUser) {
+          window.showLoginRequiredModal('learn', '../');
+        } else {
+          openVideoModal(watchId);
+        }
+      }
+
+      // Category tab click
+      document.querySelectorAll('.cat-pill').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          document.querySelectorAll('.cat-pill').forEach(b => {
+            b.classList.remove('bg-[#0B5796]', 'text-white');
+            b.classList.add('bg-slate-100', 'text-slate-700');
+          });
+          e.currentTarget.classList.add('bg-[#0B5796]', 'text-white');
+          e.currentTarget.classList.remove('bg-slate-100', 'text-slate-700');
+          activeCat = e.currentTarget.getAttribute('data-cat');
+          renderTutorials();
+        });
+      });
+
+      // Search input
+      const searchInput = document.getElementById('learnSearchInput');
+      searchInput.addEventListener('input', (e) => {
+        searchQuery = e.target.value.trim();
+        renderTutorials();
+      });
+
+      // Modal close backdrop
+      document.getElementById('learnVideoModal').addEventListener('click', (e) => {
+        if (e.target.id === 'learnVideoModal') closeVideoModal();
+      });
+    });
+  </script>
+</body>
+</html>
