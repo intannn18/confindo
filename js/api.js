@@ -687,15 +687,41 @@ class ConfApi {
 
   getUserPurchasedProducts(userId) {
     if (!userId) return [];
-    const paidOrderIds = this.db.orders
-      .filter(o => o.user_id === userId && o.payment_status === 'paid')
-      .map(o => o.id);
+    const user = this.db.users.find(u => u.id === userId) || this.getCurrentUser();
+    const userEmail = (user && user.email) ? user.email.toLowerCase().trim() : '';
 
-    const purchasedProductIds = this.db.order_items
+    const paidOrders = this.db.orders.filter(o => {
+      const isPaid = o.payment_status === 'paid' || o.payment_status === 'success' || !o.payment_status;
+      if (!isPaid) return false;
+      const matchId = o.user_id === userId;
+      const matchEmail = Boolean(userEmail && o.buyer_email && o.buyer_email.toLowerCase().trim() === userEmail);
+      return matchId || matchEmail;
+    });
+
+    const paidOrderIds = paidOrders.map(o => o.id);
+
+    // 1. Resolve from order_items
+    const fromItems = (this.db.order_items || [])
       .filter(oi => paidOrderIds.includes(oi.order_id))
       .map(oi => (oi.product_id === 'prod-presentation-checklist' ? 'prod-checklist-pro' : oi.product_id));
 
-    return this.db.products.filter(p => purchasedProductIds.includes(p.id) || (p.id === 'prod-checklist-pro' && purchasedProductIds.includes('prod-presentation-checklist')));
+    // 2. Also resolve directly from order.product_id or matching order.product_name
+    const fromOrders = paidOrders.map(o => {
+      if (o.product_id) return o.product_id;
+      if (o.product_name) {
+        const cleanName = o.product_name.toLowerCase().trim();
+        const matched = this.db.products.find(p => {
+          const pName = (p.name || p.title || '').toLowerCase().trim();
+          return pName === cleanName || cleanName.includes(pName) || pName.includes(cleanName);
+        });
+        if (matched) return matched.id;
+      }
+      return null;
+    }).filter(Boolean);
+
+    const allProductIds = new Set([...fromItems, ...fromOrders]);
+
+    return this.db.products.filter(p => allProductIds.has(p.id) || (p.id === 'prod-checklist-pro' && allProductIds.has('prod-presentation-checklist')));
   }
 
   userOwnsProduct(userId, productId) {

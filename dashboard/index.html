@@ -227,12 +227,12 @@
 
   <!-- Scripts -->
   <script src="../js/data.js"></script>
-  <script src="../js/api.js?v=20261028_v3"></script>
+  <script src="../js/api.js?v=20261028_v5"></script>
   <script src="../js/navbar.js"></script>
   <script>
     let currentUser = null;
 
-    function initDashboard() {
+    async function initDashboard() {
       currentUser = window.confApi ? window.confApi.getCurrentUser() : null;
       if (!currentUser) {
         alert('Silakan login terlebih dahulu untuk mengakses dashboard Anda.');
@@ -247,6 +247,13 @@
       document.getElementById('profileNameInput').value = currentUser.name;
       document.getElementById('profileEmailInput').value = currentUser.email;
       document.getElementById('profileRoleInput').value = (currentUser.role === 'admin' ? 'Administrator' : 'Anggota Pembelajar Mandiri');
+
+      // Sync latest data from hosting server so user purchases are up-to-date across all devices
+      if (window.confApi && window.confApi.fetchOrdersFromServer) {
+        try {
+          await window.confApi.fetchOrdersFromServer();
+        } catch(e) {}
+      }
 
       // 1. Challenge stats
       const chProgress = window.confApi.getUserChallengeProgress(currentUser.id);
