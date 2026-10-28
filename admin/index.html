@@ -284,10 +284,12 @@
 
       updateAdminStatsDisplay();
       renderOrdersTable();
+      renderUsersTable();
 
       if (badge) {
         const orderCount = window.confApi ? window.confApi.getAllOrders().length : 0;
-        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Database Hosting Aktif (${orderCount} Pesanan)`;
+        const userCount = window.confApi ? window.confApi.getAdminUsers().length : 0;
+        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Database Hosting Aktif (${userCount} User, ${orderCount} Pesanan)`;
       }
     }
 

@@ -209,6 +209,7 @@ class ConfApi {
 
     this.db.users.push(newUser);
     this.save();
+    this.saveUserToServer(newUser);
 
     const sessionUser = {
       id: newUser.id,
@@ -507,15 +508,44 @@ class ConfApi {
     return false;
   }
 
+  async saveUserToServer(userData) {
+    const apiUrl = this.getApiPhpUrl();
+    try {
+      await fetch(`${apiUrl}?action=create_user`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData)
+      });
+    } catch (e) {
+      console.warn('[CONFindo] Native PHP API user save notice:', e);
+    }
+  }
+
   async fetchOrdersFromServer() {
     const apiUrl = this.getApiPhpUrl();
     try {
-      const res = await fetch(`${apiUrl}?action=get_orders&t=` + Date.now());
+      // 1. Fetch All Unified Data (Orders + Users)
+      const res = await fetch(`${apiUrl}?action=get_all_data&t=` + Date.now());
       if (res.ok) {
-        const serverOrders = await res.json();
+        const data = await res.json();
+        if (data && (Array.isArray(data.orders) || Array.isArray(data.users))) {
+          console.log('[CONFindo] Unified Data loaded from Hosting Server (api.php) 🚀', data);
+          if (Array.isArray(data.orders) && data.orders.length > 0) {
+            this.db.orders = data.orders;
+          }
+          if (Array.isArray(data.users) && data.users.length > 0) {
+            this.db.users = data.users;
+          }
+          this.save();
+          return this.getAllOrders();
+        }
+      }
+
+      // Fallback: individual get_orders
+      const resOrders = await fetch(`${apiUrl}?action=get_orders&t=` + Date.now());
+      if (resOrders.ok) {
+        const serverOrders = await resOrders.json();
         if (Array.isArray(serverOrders) && serverOrders.length > 0) {
-          console.log('[CONFindo] Orders loaded from Hosting Server (api.php) 🚀', serverOrders.length);
-          // Set server orders as the true central database across all devices
           this.db.orders = serverOrders;
           this.save();
           return this.getAllOrders();
