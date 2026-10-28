@@ -450,7 +450,7 @@
   <!-- Scripts -->
   <script src="../js/data.js"></script>
   <script src="../js/audio.js"></script>
-  <script src="../js/api.js?v=20261028_v5"></script>
+  <script src="../js/api.js?v=20261028_v6"></script>
   <script src="../js/navbar.js"></script>
   <script>
     let currentProd = null;
@@ -535,7 +535,7 @@
     }
 
     // Submit Payment and Direct to WhatsApp to send Proof
-    function submitPaymentWithProof() {
+    async function submitPaymentWithProof() {
       const buyerName = document.getElementById('buyerName').value.trim();
       const buyerPhone = document.getElementById('buyerPhone').value.trim();
       const buyerEmail = document.getElementById('buyerEmail').value.trim();
@@ -599,7 +599,7 @@ Mohon diverifikasi pembayarannya ya min. Terima kasih banyak! 🙏✨`;
       }
 
       if (window.confApi) {
-        window.confApi.createOrder(user.id, currentProd.id, 'QRIS', {
+        await window.confApi.createOrder(user.id, currentProd.id, 'QRIS', {
           orderId: orderId,
           name: buyerName,
           email: buyerEmail,

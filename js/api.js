@@ -187,7 +187,7 @@ class ConfApi {
     return { success: true, user: sessionUser };
   }
 
-  register(name, email, password) {
+  async register(name, email, password) {
     const cleanEmail = email.trim().toLowerCase();
     if (cleanEmail === 'admin@confindo.id' || cleanEmail.includes('admin@')) {
       return { success: false, message: 'Alamat email ini dikhususkan untuk Administrator internal.' };
@@ -209,7 +209,9 @@ class ConfApi {
 
     this.db.users.push(newUser);
     this.save();
-    this.saveUserToServer(newUser);
+    try {
+      await this.saveUserToServer(newUser);
+    } catch (e) {}
 
     const sessionUser = {
       id: newUser.id,
@@ -643,7 +645,7 @@ class ConfApi {
 
   // Orders & Digital Product Access (Security)
   // ==========================================
-  createOrder(userId, productId, paymentMethod = 'QRIS', buyerInfo = null) {
+  async createOrder(userId, productId, paymentMethod = 'QRIS', buyerInfo = null) {
     const product = this.getProductById(productId);
     if (!product) return { success: false, message: 'Produk tidak ditemukan.' };
 
@@ -656,6 +658,7 @@ class ConfApi {
       buyer_phone: buyerInfo?.phone || '',
       buyer_notes: buyerInfo?.notes || '',
       product_name: product.name,
+      product_id: product.id,
       total: product.price,
       payment_status: 'paid', // Instant verified in prototype
       payment_reference: 'QRIS-ID1026614998627-' + Math.floor(100000 + Math.random() * 900000),
@@ -672,10 +675,34 @@ class ConfApi {
 
     this.db.orders.unshift(newOrder);
     this.db.order_items.unshift(newOrderItem);
+
+    // If buyer email is provided, automatically record buyer as user
+    if (buyerInfo?.email) {
+      const bEmail = buyerInfo.email.toLowerCase().trim();
+      const existingUser = this.db.users.find(u => u.email.toLowerCase().trim() === bEmail);
+      if (!existingUser) {
+        const buyerUser = {
+          id: userId || ('usr-' + Date.now()),
+          name: buyerInfo.name || 'Customer',
+          email: bEmail,
+          password_hash: 'user123',
+          role: 'user',
+          profile_image: `https://ui-avatars.com/api/?name=${encodeURIComponent(buyerInfo.name || 'User')}&background=0B5796&color=fff`,
+          created_at: new Date().toISOString()
+        };
+        this.db.users.push(buyerUser);
+        try {
+          await this.saveUserToServer(buyerUser);
+        } catch(err) {}
+      }
+    }
+
     this.save();
 
-    // Asynchronously save to Hosting Server (api.php) & Cloud
-    this.saveOrderToServer(newOrder);
+    // Save to Hosting Server (api.php) & Cloud
+    try {
+      await this.saveOrderToServer(newOrder);
+    } catch (e) {}
 
     return { success: true, order: newOrder, product };
   }

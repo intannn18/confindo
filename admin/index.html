@@ -223,7 +223,7 @@
   <!-- Scripts -->
   <script src="../js/data.js"></script>
   <script src="../js/supabase-config.js"></script>
-  <script src="../js/api.js?v=20261028_v5"></script>
+  <script src="../js/api.js?v=20261028_v6"></script>
   <script src="../js/navbar.js"></script>
   <script>
     function checkAdminAuth() {
@@ -260,8 +260,26 @@
       renderOrdersTable();
       renderUsersTable();
 
-      // Live fetch from Supabase Cloud
+      // Live fetch from Hosting Server
       await refreshAdminOrders();
+
+      // Auto Real-Time Sync: Otomatis sinkron data tiap 4 detik agar transaksi & user baru langsung tampil
+      setInterval(async () => {
+        if (window.confApi && window.confApi.fetchOrdersFromServer) {
+          try {
+            await window.confApi.fetchOrdersFromServer();
+            updateAdminStatsDisplay();
+            renderOrdersTable();
+            renderUsersTable();
+            const badge = document.getElementById('supabaseSyncBadge');
+            if (badge) {
+              const orderCount = window.confApi ? window.confApi.getAllOrders().length : 0;
+              const userCount = window.confApi ? window.confApi.getAdminUsers().length : 0;
+              badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Database Hosting Aktif (${userCount} User, ${orderCount} Pesanan)`;
+            }
+          } catch(err) {}
+        }
+      }, 4000);
     }
 
     function updateAdminStatsDisplay() {

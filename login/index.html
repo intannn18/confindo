@@ -202,7 +202,7 @@
   <!-- Scripts -->
   <script src="../js/data.js"></script>
   <script src="../js/supabase-config.js"></script>
-  <script src="../js/api.js?v=20261028_v5"></script>
+  <script src="../js/api.js?v=20261028_v6"></script>
   <script src="../js/navbar.js"></script>
   <script>
     function switchAuthTab(type) {
@@ -266,8 +266,11 @@
       }
     }
 
-    function handleRegisterSubmit(e) {
+    async function handleRegisterSubmit(e) {
       e.preventDefault();
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const originalText = submitBtn ? submitBtn.innerText : 'Daftar Akun';
+
       const name = document.getElementById('regName').value;
       const email = document.getElementById('regEmail').value;
       const pass = document.getElementById('regPassword').value;
@@ -278,12 +281,21 @@
         return;
       }
 
-      const res = window.confApi.register(name, email, pass);
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Menyimpan Akun...';
+      }
+
+      const res = await window.confApi.register(name, email, pass);
       if (res.success) {
         alert('Akun berhasil didaftarkan!');
         redirectPostAuth(res.user);
       } else {
         alert(res.message);
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerText = originalText;
+        }
       }
     }
 
