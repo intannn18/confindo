@@ -202,7 +202,7 @@
   <!-- Scripts -->
   <script src="../js/data.js"></script>
   <script src="../js/supabase-config.js"></script>
-  <script src="../js/api.js?v=20261028_v6"></script>
+  <script src="../js/api.js?v=20261028_v7"></script>
   <script src="../js/navbar.js"></script>
   <script>
     function switchAuthTab(type) {
@@ -239,13 +239,13 @@
       }
     }
 
-    function demoLogin(email, pass) {
+    async function demoLogin(email, pass) {
       const emailInput = document.getElementById('loginEmail');
       const passInput = document.getElementById('loginPassword');
       if (emailInput) emailInput.value = email;
       if (passInput) passInput.value = pass;
 
-      const res = window.confApi.login(email, pass);
+      const res = await window.confApi.login(email, pass);
       if (res.success) {
         redirectPostAuth(res.user);
       } else {
@@ -253,16 +253,28 @@
       }
     }
 
-    function handleLoginSubmit(e) {
+    async function handleLoginSubmit(e) {
       e.preventDefault();
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const originalText = submitBtn ? submitBtn.innerText : 'Login';
+
       const email = document.getElementById('loginEmail').value;
       const pass = document.getElementById('loginPassword').value;
 
-      const res = window.confApi.login(email, pass);
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Memeriksa...';
+      }
+
+      const res = await window.confApi.login(email, pass);
       if (res.success) {
         redirectPostAuth(res.user);
       } else {
         alert(res.message);
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerText = originalText;
+        }
       }
     }
 

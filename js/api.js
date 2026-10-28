@@ -161,11 +161,24 @@ class ConfApi {
     }
   }
 
-  login(email, password) {
-    const user = this.db.users.find(u => u.email.toLowerCase() === email.trim().toLowerCase());
+  async login(email, password) {
+    const cleanEmail = (email || '').trim().toLowerCase();
+
+    // 1. Check local db first
+    let user = this.db.users.find(u => u.email && u.email.toLowerCase().trim() === cleanEmail);
+
+    // 2. If not found locally, fetch latest users directly from server hosting!
+    if (!user) {
+      try {
+        await this.fetchOrdersFromServer();
+        user = this.db.users.find(u => u.email && u.email.toLowerCase().trim() === cleanEmail);
+      } catch (e) {}
+    }
+
     if (!user) {
       return { success: false, message: 'Email tidak terdaftar.' };
     }
+
     // Allow convenient admin passwords (case variations & shortcuts)
     const isAdmin = user.role === 'admin' || user.email.toLowerCase() === 'admin@confindo.id';
     const allowedAdminPass = ['Admin#CONFindo2026!', 'admin123', 'admin', 'Admin123', 'admin#confindo2026!'];
