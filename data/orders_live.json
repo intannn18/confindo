@@ -21,6 +21,7 @@
         "buyer_phone": "085725957927",
         "buyer_notes": "Order via Mobile Device",
         "product_name": "Speech Script Template Bundle",
+        "product_id": "prod-template-naskah-pidato",
         "total": 12000,
         "payment_status": "paid",
         "payment_method": "QRIS",
