@@ -8,6 +8,11 @@ class ConfApi {
     this.storageKey = 'confindo_db_v8';
     this.sessionKey = 'confindo_session_user';
     this.initDatabase();
+    if (typeof window !== 'undefined') {
+      setTimeout(() => {
+        this.fetchOrdersFromSupabase();
+      }, 50);
+    }
   }
 
   // Initialize database from data/db.json seed or localStorage
